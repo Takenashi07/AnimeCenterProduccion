@@ -1,0 +1,783 @@
+
+:root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+}
+
+.site-header {
+    padding-top: var(--safe-top);
+}
+
+.site-footer {
+    padding-bottom: calc(20px + var(--safe-bottom));
+}
+
+.login-screen {
+    padding-left: calc(40px + var(--safe-left));
+    padding-right: calc(40px + var(--safe-right));
+    padding-top: calc(40px + var(--safe-top));
+    padding-bottom: calc(40px + var(--safe-bottom));
+    min-height: 100dvh; /* evita que la barra de direcciones móvil recorte el login */
+}
+
+/* --- Altura completa real en móvil (solo el hero del Home) --- */
+
+.hero {
+    min-height: 100dvh;
+}
+
+@media (min-width: 992px) {
+    .hero {
+        min-height: 560px; /* en desktop no necesitamos pantalla completa */
+    }
+}
+
+/* --- Touch targets: en pantallas táctiles, íconos chicos crecen un poco --- */
+
+@media (pointer: coarse) {
+    .catalog-icon-btn,
+    .media-slot-delete,
+    .media-slot-view,
+    .saved-card-remove,
+    .saved-card-bookmark,
+    .favorite-card-like,
+    .toggle-password,
+    .rating-star {
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .catalog-page-btn {
+        min-width: 36px;
+        min-height: 36px;
+    }
+}
+
+/* --- Filas de anime (Home/Series/Películas): en pantallas táctiles
+   las flechas solo estorban — ya se navega deslizando con el dedo.
+   Usamos (hover: none) en vez de solo el ancho, para que también
+   aplique en tablets táctiles aunque tengan pantalla grande. --- */
+
+@media (hover: none) and (pointer: coarse) {
+    .row-arrow,
+    .slider-arrow {
+        display: none;
+    }
+
+    .row-track-wrap {
+        gap: 0;
+    }
+
+    .row-track {
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .row-track .anime-card-link {
+        scroll-snap-align: start;
+    }
+}
+
+/* Respaldo por ancho: la regla de arriba solo detecta dispositivos
+   táctiles reales. Si alguien prueba angostando la ventana en una
+   laptop con mouse (sin emular touch), (hover: none) no aplica y las
+   flechas se quedarían — esta regla las oculta igual en vista móvil,
+   sin depender de si el dispositivo es táctil o no. */
+
+@media (max-width: 768px) {
+    .row-arrow,
+    .slider-arrow {
+        display: none;
+    }
+
+    .row-track-wrap {
+        gap: 0;
+    }
+
+    .row-track {
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .row-track .anime-card-link {
+        scroll-snap-align: start;
+    }
+}
+
+/* =================================================================
+   ≤ 1200px — laptops chicas / tablets grandes en horizontal
+   ================================================================= */
+
+@media (max-width: 1200px) {
+    .navbar {
+        padding: 14px 24px;
+    }
+
+    .hero {
+        padding: 80px 24px 100px;
+    }
+
+    .catalog,
+    .about-section,
+    .features-section,
+    .creator-section,
+    .team-admins-section,
+    .admin-list-section,
+    .player-section,
+    .player-info-section,
+    .saved-section,
+    .favorites-section,
+    .feedback-section,
+    .admin-episodes-section {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+/* =================================================================
+   ≤ 991px — tablets (vertical) y móviles grandes en horizontal
+   (el breakpoint de .slider-section ya vive en style.css a 991px;
+   aquí completamos el resto de las secciones a ese mismo punto)
+   ================================================================= */
+
+@media (max-width: 991px) {
+    /* Tipografía fluida para títulos grandes */
+    .page-heading h1,
+    .section-heading h2,
+    .admin-form-card h2 {
+        font-size: clamp(24px, 4vw, 34px);
+    }
+
+    .hero h1 {
+        font-size: clamp(28px, 6vw, 44px);
+    }
+
+    /* Pedido explícito: subir el título/subtítulo lo más posible en
+       vez de dejarlo anclado abajo (que es lo que hacía flex-end +
+       padding-bottom, pensado solo para desktop). */
+    .page-heading--hero-low {
+        justify-content: flex-start;
+        padding-bottom: 32px; /* el padding-bottom de 200px (base, pensado
+                                  para flex-end) seguía "contando" para el
+                                  alto natural del hero aunque ya no
+                                  posicionara nada */
+    }
+
+    .page-heading--hero {
+        min-height: 320px;
+    }
+
+    .stats-strip.hero-overlap {
+        margin-top: -120px;
+    }
+
+    .genre-subnav.hero-overlap {
+        margin-top: -110px;
+    }
+
+    .profile-section.hero-overlap,
+    .catalog.hero-overlap,
+    .view-toggle.hero-overlap {
+        margin-top: -70px;
+    }
+
+    /* Panel de admin: dos columnas siguen bien hasta aquí, pero el
+       reproductor y su info se acomodan mejor apilados */
+    .player-info-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .player-actions {
+        justify-content: flex-start;
+    }
+}
+
+/* =================================================================
+   ≤ 800px — el punto donde escondes .nav-center (definido en
+   style.css). Aquí lo convertimos en un panel deslizable controlado
+   por un botón hamburguesa (ver nav-toggle.js), en vez de dejarlo
+   simplemente invisible sin ninguna forma de navegar.
+   ================================================================= */
+
+.nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text-main);
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-hamburger.is-active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.nav-hamburger.is-active span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-hamburger.is-active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 800px) {
+    /* Un ancestro con backdrop-filter (o filter/transform) se
+       convierte en el "contenedor" de sus hijos position:fixed —
+       eso hacía que el panel de .nav-center se posicionara respecto
+       al navbar (unos 80px de alto) en vez de toda la pantalla.
+       Quitamos el blur aquí para que el panel cubra el viewport
+       completo como corresponde. */
+    .site-header {
+        backdrop-filter: none;
+    }
+
+    .navbar {
+        grid-template-columns: auto 1fr auto;
+        padding: 12px 16px;
+    }
+
+    .nav-hamburger {
+        display: flex;
+        position: relative;
+        z-index: 61; /* por encima de .nav-center (z-index: 60), si no
+                        el botón queda tapado por el panel al abrirlo */
+        justify-self: end; /* sin esto queda a la izquierda de su columna
+                               (que ocupa el espacio libre entre logo y
+                               acciones), o sea "flotando" hacia el centro
+                               en vez de pegado arriba a la derecha */
+    }
+
+    .nav-brand span {
+        font-size: 16px;
+    }
+
+    .nav-actions {
+        gap: 8px;
+    }
+
+    .btn-ghost {
+        font-size: 13px;
+    }
+
+    .btn-gradient-sm {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .profile-trigger-name {
+        display: none; /* deja solo el avatar, ahorra espacio horizontal */
+    }
+
+    /* El panel deslizable: un drawer angosto pegado a la izquierda
+       (no pantalla completa), con una sombra que lo despega del
+       resto de la página, que queda visible detrás. Se abre al
+       activar el hamburguesa (clase .is-open puesta por
+       nav-toggle.js), en vez de quedarse escondido sin alternativa. */
+    .nav-center {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: min(50vw, 240px);
+        z-index: 60;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 72px 18px 20px;
+        background: #120c1c;
+        box-shadow: 12px 0 40px rgba(0, 0, 0, 0.5);
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+    }
+
+    .nav-center.is-open {
+        transform: translateX(0);
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        margin: 0;
+        padding: 0; /* el <ul> trae padding-inline-start por defecto del
+                       navegador, que corría "Home/Series/etc." hacia la
+                       derecha respecto a Guardados */
+    }
+
+    .nav-links a {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .nav-search {
+        order: -1; /* el buscador arriba de los links, más a la mano */
+        padding: 5px 8px;
+    }
+
+    .nav-search input {
+        width: 100px;
+        font-size: 12px;
+    }
+
+    .nav-saved-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        gap: 5px;
+    }
+
+    .nav-saved-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* =================================================================
+   ≤ 768px — tablets en vertical / phablets
+   ================================================================= */
+
+@media (max-width: 768px) {
+    .catalog,
+    .about-section,
+    .features-section,
+    .creator-section,
+    .team-admins-section,
+    .admin-list-section,
+    .player-section,
+    .player-info-section,
+    .saved-section,
+    .favorites-section,
+    .feedback-section,
+    .saved-toolbar,
+    .view-toggle,
+    .admin-episodes-section {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .row-track .anime-card-link {
+        flex: 0 0 200px;
+    }
+
+    .features-grid,
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-strip {
+        gap: 28px;
+    }
+
+    .creator-card {
+        padding: 22px;
+    }
+
+    .slide-info {
+        left: 20px;
+        bottom: 32px;
+    }
+}
+
+/* =================================================================
+   ≤ 600px — móviles estándar (ya coincide con tu breakpoint de
+   .login-screen / .admin-form-grid / .admin-row en style.css)
+   ================================================================= */
+
+@media (max-width: 600px) {
+    /* En tablet (breakpoint de 800px) el hamburguesa se queda junto
+       al logo. En teléfono ya no cabe cómodo ahí junto a "Iniciar
+       sesión"/"Regístrate", así que se reacomoda: brand arriba-
+       izquierda, login/registro arriba-derecha, y el hamburguesa
+       abajo-derecha (debajo de "Regístrate"), usando grid-areas en
+       vez de reordenar el HTML. */
+    .navbar {
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+            "brand   .       actions"
+            ".       .       hamburger";
+        row-gap: 6px;
+    }
+
+    .nav-brand {
+        grid-area: brand;
+    }
+
+    .nav-actions {
+        grid-area: actions;
+    }
+
+    .nav-hamburger {
+        grid-area: hamburger;
+        justify-self: end;
+    }
+
+    .login-heading h2 {
+        font-size: 20px;
+    }
+
+    .brand-name {
+        font-size: 26px;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+    }
+
+    .card-body {
+        padding: 14px 16px 16px;
+    }
+
+    .row-track .anime-card-link {
+        flex: 0 0 168px;
+    }
+
+    .row-arrow {
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
+    }
+
+    .genre-subnav {
+        gap: 8px;
+        padding: 12px 18px 24px;
+    }
+
+    .genre-subnav a {
+        padding: 7px 14px;
+        font-size: 12px;
+    }
+
+    /* Reproductor: controles más compactos y sin desbordar */
+    .player-controls {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 12px;
+    }
+
+    .player-seek {
+        order: 1;
+        flex-basis: 100%;
+    }
+
+    .player-time {
+        order: 2;
+    }
+
+    .player-episode-nav {
+        flex-direction: column;
+    }
+
+    .player-episode-nav a {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Sticker del gate de login, un poco más chico en móvil */
+    .login-gate-sticker {
+        max-width: 220px;
+    }
+
+    .login-gate-text h2 {
+        font-size: 19px;
+    }
+
+    /* Toolbars y filtros del admin, apilados */
+    .catalog-filters {
+        gap: 10px;
+    }
+
+    .catalog-filter {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .catalog-filter select {
+        flex: 1;
+        max-width: 60%;
+    }
+
+    .saved-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .saved-sort select {
+        width: 100%;
+    }
+
+    .admin-row {
+        gap: 10px;
+    }
+
+    .admin-row-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* =================================================================
+   ≤ 480px — móviles chicos (iPhone SE/mini y similares)
+   ================================================================= */
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 28px 18px;
+        border-radius: 18px;
+    }
+
+    .field-hint,
+    .signup-text {
+        font-size: 12px;
+    }
+
+    .page-heading {
+        padding: 40px 18px 8px;
+    }
+
+    .page-heading--hero {
+        padding: 32px 18px;
+    }
+
+    .saved-heading {
+        padding: 40px 18px 28px;
+    }
+
+    .saved-icon {
+        width: 46px;
+        height: 46px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .card-body h3 {
+        font-size: 15px;
+    }
+
+    .card-body p {
+        -webkit-line-clamp: 2;
+    }
+
+    .creator-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 14px;
+    }
+
+    .creator-links {
+        justify-content: center;
+    }
+
+    .feature-card {
+        padding: 22px 16px;
+    }
+
+    .btn-submit {
+        font-size: 14px;
+        padding: 13px 0;
+    }
+
+    .player-action-btn span,
+    .player-action-btn {
+        font-size: 12px;
+        padding: 9px 12px;
+    }
+
+    .player-rating {
+        justify-content: center;
+    }
+
+    .rating-star svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .admin-media-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .media-picker-modal {
+        padding: 20px;
+    }
+
+    .feedback-card {
+        padding: 26px 20px;
+    }
+
+    /* Botones del gate de login, uno debajo del otro si no caben */
+    .player-gate-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .player-gate-actions a {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* =================================================================
+   ≤ 380px — teléfonos angostos actuales (iPhone SE, compactos Android)
+   ================================================================= */
+
+@media (max-width: 380px) {
+    .brand-tagline {
+        font-size: 11px;
+    }
+
+    .hero-subtitle,
+    .page-heading p {
+        font-size: 13px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr; /* una sola columna, evita tarjetas apretadas */
+    }
+
+    .stat-number {
+        font-size: 26px;
+    }
+
+    .stats-strip {
+        gap: 20px;
+    }
+
+    .slide-badge {
+        font-size: 10px;
+        padding: 5px 10px;
+    }
+
+    .slide-desc {
+        -webkit-line-clamp: 2;
+    }
+
+    .admin-media-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .catalog-table {
+        font-size: 12px;
+    }
+
+    .catalog-table td,
+    .catalog-table thead th {
+        padding: 8px 10px;
+    }
+}
+
+/* =================================================================
+   ≤ 340px — equipos viejos / gama muy baja (~5 años atrás)
+   Prioriza que nada se corte por encima de que se vea "bonito".
+   ================================================================= */
+
+@media (max-width: 340px) {
+    .login-card {
+        padding: 22px 14px;
+    }
+
+    .brand-name {
+        font-size: 22px;
+    }
+
+    .page-heading h1,
+    .section-heading h2 {
+        font-size: 22px;
+    }
+
+    .navbar {
+        padding: 10px 12px;
+    }
+
+    .nav-brand span {
+        display: none; /* deja solo el ícono de la luna para no chocar con los botones */
+    }
+
+    .catalog-add-btn,
+    .btn-gradient,
+    .btn-outline {
+        font-size: 13px;
+        padding: 11px 16px;
+    }
+
+    .login-gate-sticker {
+        max-width: 170px;
+    }
+
+    .player-controls {
+        padding: 8px;
+    }
+
+    .player-btn--play {
+        padding: 6px;
+    }
+}
+
+/* =================================================================
+   Móvil en horizontal (landscape) — pantallas bajas, no angostas.
+   El hero/login a pantalla completa se ve mal cuando el alto es
+   chico (típico al girar el teléfono), así que se limita.
+   ================================================================= */
+
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+    .hero,
+    .page-heading--hero,
+    .login-screen {
+        min-height: auto;
+    }
+
+    .hero {
+        padding: 40px 24px;
+    }
+
+    .login-screen {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    #video-player {
+        max-height: 80vh;
+    }
+}
+
+/* =================================================================
+   Pantallas grandes (monitores anchos) — evita que el contenido
+   se sienta perdido en el centro sin límite razonable.
+   ================================================================= */
+
+@media (min-width: 1600px) {
+    .navbar,
+    .catalog,
+    .player-section,
+    .player-info-section {
+        max-width: 1400px;
+    }
+}

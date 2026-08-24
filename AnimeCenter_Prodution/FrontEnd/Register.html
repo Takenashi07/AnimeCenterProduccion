@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/Assets/Icons/Icon_AnimeCenter.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/FrontEnd/Style/Normalize.css">
+    <link rel="stylesheet" href="/FrontEnd/Style/style.css">
+    <link rel="stylesheet" href="/FrontEnd/Style/Responsive.css">
+    <title>Anime Center · Crear cuenta</title>
+</head>
+<body>
+
+    <div class="login-screen">
+
+        <div class="login-card">
+
+            <a href="/index.html" class="brand" aria-label="Ir al inicio">
+                <div class="brand-logo" aria-hidden="true">
+                    <svg viewBox="0 0 100 100" width="64" height="64">
+                        <defs>
+                            <linearGradient id="moonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#f472b6"/>
+                                <stop offset="100%" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M65 15
+                                 a35 35 0 1 0 20 55
+                                 a27 27 0 1 1 -20 -55 Z" fill="url(#moonGrad)"/>
+                        <g stroke="#1a1425" stroke-width="3" stroke-linecap="round">
+                            <line x1="38" y1="52" x2="62" y2="52"/>
+                            <line x1="42" y1="40" x2="42" y2="66"/>
+                            <line x1="58" y1="40" x2="58" y2="66"/>
+                            <line x1="34" y1="42" x2="66" y2="42"/>
+                        </g>
+                    </svg>
+                </div>
+                <h1 class="brand-name">Anime<span>Center</span></h1>
+                <p class="brand-tagline">アニメのすべてを、ひとつの場所で</p>
+            </a>
+
+            <div class="login-heading">
+                <h2>Crear cuenta</h2>
+                <p>Únete y arma tu propia lista de anime.</p>
+            </div>
+
+            <form class="login-form" id="register-form">
+
+                <div class="field">
+                    <label for="username">Nombre de usuario</label>
+                    <div class="input-wrap">
+                        <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/>
+                        </svg>
+                        <input type="text" id="username" name="username" placeholder="Elige un nombre de usuario" required minlength="3" maxlength="50">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="email">Correo electrónico</label>
+                    <div class="input-wrap">
+                        <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M3 6h18v12H3z"/>
+                            <path d="M3 7l9 6 9-6"/>
+                        </svg>
+                        <input type="email" id="email" name="email" placeholder="ejemplo@animecenter.com" required maxlength="100">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="password">Contraseña</label>
+                    <div class="input-wrap">
+                        <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="5" y="11" width="14" height="9" rx="2"/>
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                        </svg>
+                        <input type="password" id="password" name="password" placeholder="Crea una contraseña" required minlength="8" maxlength="100">
+                        <button type="button" class="toggle-password" id="toggle-password-btn" aria-label="Mostrar contraseña">
+                            <svg class="eye-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-off-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" hidden>
+                                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c6 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/>
+                                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="field-hint">Mínimo 8 caracteres.</p>
+                </div>
+
+                <div class="field">
+                    <label for="confirm-password">Confirmar contraseña</label>
+                    <div class="input-wrap">
+                        <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="5" y="11" width="14" height="9" rx="2"/>
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                        </svg>
+                        <input type="password" id="confirm-password" name="confirm_password" placeholder="Repite tu contraseña" required minlength="8" maxlength="100">
+                        <button type="button" class="toggle-password" id="toggle-confirm-password-btn" aria-label="Mostrar contraseña">
+                            <svg class="eye-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-off-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" hidden>
+                                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a18.5 18.5 0 0 1 4.22-5.06M9.9 4.24A10.94 10.94 0 0 1 12 4c6 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/>
+                                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row form-row--terms">
+                    <label class="checkbox">
+                        <input type="checkbox" name="terms" required>
+                        <span class="checkbox-box"></span>
+                        Acepto los <a href="/FrontEnd/Terminos.html" target="_blank" rel="noopener" class="link-muted">Términos</a> y la <a href="/FrontEnd/Privacidad.html" target="_blank" rel="noopener" class="link-muted">Privacidad</a>
+                    </label>
+                </div>
+
+                <p class="form-error" id="form-error" role="alert" hidden></p>
+
+                <button type="submit" class="btn-submit">
+                    Crear cuenta
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </button>
+            </form>
+
+            <p class="signup-text">¿Ya tienes cuenta? <a href="/FrontEnd/Login.html">Inicia sesión</a></p>
+
+        </div>
+
+        <div class="login-welcome" aria-hidden="true">
+            <h2 class="login-welcome-title">Bienvenido a <span>Anime Center</span></h2>
+            <p class="login-welcome-text">
+                Descubre las últimas series, películas y estrenos de temporada,
+                todo organizado en un solo lugar. Sin anuncios, sin distracciones —
+                solo tu próxima maratón esperando.
+            </p>
+        </div>
+
+    </div>
+
+    <script type="module" src="/FrontEnd/Scripts/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.toggle-password').forEach((toggleBtn) => {
+                const wrap = toggleBtn.closest('.input-wrap');
+                const input = wrap ? wrap.querySelector('input') : null;
+                const eyeIcon = toggleBtn.querySelector('.eye-icon');
+                const eyeOffIcon = toggleBtn.querySelector('.eye-off-icon');
+
+                if (!input || !eyeIcon || !eyeOffIcon) return;
+
+                toggleBtn.addEventListener('click', () => {
+                    const isHidden = input.type === 'password';
+                    input.type = isHidden ? 'text' : 'password';
+                    toggleBtn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+                    eyeIcon.hidden = isHidden;
+                    eyeOffIcon.hidden = !isHidden;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

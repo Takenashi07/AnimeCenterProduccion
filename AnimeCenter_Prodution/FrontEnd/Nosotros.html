@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/Assets/Icons/Icon_AnimeCenter.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/FrontEnd/Style/Normalize.css">
+    <link rel="stylesheet" href="/FrontEnd/Style/style.css">
+    <link rel="stylesheet" href="/FrontEnd/Style/Responsive.css">
+    <title>Anime Center · Nosotros</title>
+</head>
+<body>
+
+    <header class="site-header">
+        <nav class="navbar">
+            <a href="/index.html" class="nav-brand">
+                <svg viewBox="0 0 100 100" width="32" height="32" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="navMoonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f472b6"/>
+                            <stop offset="100%" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M65 15 a35 35 0 1 0 20 55 a27 27 0 1 1 -20 -55 Z" fill="url(#navMoonGrad)"/>
+                </svg>
+                <span>Anime<em>Center</em></span>
+            </a>
+
+                <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+                    <span></span><span></span><span></span>
+                </button>
+
+            <div class="nav-center">
+                <ul class="nav-links">
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/FrontEnd/Series.html">Series</a></li>
+                    <li><a href="/FrontEnd/Peliculas.html">Películas</a></li>
+                    <li><a href="/FrontEnd/Nosotros.html">Nosotros</a></li>
+                    <li id="nav-admin-item" hidden><a href="/FrontEnd/Admin.html">Admin</a></li>
+                </ul>
+
+                <a href="/FrontEnd/Guardados.html" class="nav-saved-btn" id="nav-saved">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+                        <path d="M12 21s-6.72-4.35-9.33-8.11C1.02 10.58 1.5 7.4 4.12 5.9c2.2-1.26 4.9-.7 6.4 1.1.5.6.9 1.2 1.48 1.2s.98-.6 1.48-1.2c1.5-1.8 4.2-2.36 6.4-1.1 2.62 1.5 3.1 4.68 1.43 7-2.61 3.75-9.33 8.11-9.33 8.11z"/>
+                    </svg>
+                    <span>Guardados</span>
+                </a>
+
+                <form class="nav-search" action="/FrontEnd/Buscar.html" method="GET">
+                    <svg class="nav-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="7"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <input type="search" name="q" placeholder="Buscar anime…" aria-label="Buscar anime">
+                </form>
+            </div>
+
+            <div class="nav-actions" id="nav-actions">
+                <a href="/FrontEnd/Login.html" class="btn-ghost" id="nav-login">Iniciar sesión</a>
+                <a href="/FrontEnd/Register.html" class="btn-gradient-sm" id="nav-register">Regístrate</a>
+
+                <div class="profile-menu" id="profile-menu" hidden>
+                    <button type="button" class="profile-trigger" id="profile-trigger" aria-haspopup="true" aria-expanded="false">
+                         <span class="profile-avatar" id="profile-avatar">A</span>
+                        <span class="profile-trigger-name" id="profile-trigger-name"></span>
+                    </button>
+                    <div class="profile-dropdown" id="profile-dropdown" hidden>
+                        <p class="profile-username" id="profile-username"></p>
+                        <a href="/FrontEnd/Perfil.html" class="profile-dropdown-link">Mi perfil</a>
+                        <button type="button" class="profile-dropdown-link profile-logout" id="logout-btn">Cerrar sesión</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="page-heading page-heading--hero page-heading--hero-low">
+            <h1>Nosotros</h1>
+            <p>La historia detrás de Anime Center.</p>
+        </section>
+
+        <section class="stats-strip hero-overlap">
+            <div class="stat-item">
+                <span class="stat-number">20+</span>
+                <span class="stat-label">series y películas</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">0</span>
+                <span class="stat-label">anuncios, siempre</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">2026</span>
+                <span class="stat-label">año de lanzamiento</span>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <div class="about-content">
+                <h2>Nuestra misión</h2>
+                <p>Anime Center nació de una idea simple: dejar de saltar entre diez pestañas distintas solo para encontrar dónde ver, seguir o recordar un anime. Queremos que series, películas y tu propio progreso de visualización vivan en un solo lugar, sin ruido y sin anuncios de por medio.</p>
+
+                <h2>La historia</h2>
+                <p>El proyecto empezó como un experimento personal — una forma de aprender a construir un sitio completo de principio a fin, desde el diseño de la interfaz hasta la base de datos que guarda cada cuenta, cada favorito y cada portada. Sigue creciendo poco a poco, un catálogo, una sección y una función a la vez.</p>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <div class="section-heading">
+                <h2>Qué nos hace diferentes</h2>
+                <p>Las decisiones detrás de Anime Center.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚫</div>
+                    <h3>Sin anuncios</h3>
+                    <p>Nunca vas a ver publicidad aquí. Ni ahora, ni después.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Favoritos y progreso</h3>
+                    <p>Guarda lo que estás viendo y retómalo justo donde te quedaste.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎬</div>
+                    <h3>Catálogo curado</h3>
+                    <p>Cada título se agrega a mano, no es un scraper genérico.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Jerarquía del equipo ===== -->
+
+        <section class="creator-section creator-section--linked">
+            <div class="creator-card">
+                <img class="creator-photo" src="/Assets/Imgs/dev-espinosa.jpg" alt="Foto de Dev. Espinosa"
+                     onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'creator-avatar', textContent: 'DE'}));">
+                <div class="creator-info">
+                    <h3>Dev. Espinosa</h3>
+                    <p class="creator-role">Creador de Anime Center</p>
+                    <p class="creator-bio">Diseñó y construyó Anime Center de principio a fin — desde la interfaz hasta la base de datos que lo mantiene funcionando.</p>
+
+                    <div class="creator-links">
+                        <a href="mailto:takenashi07@gmail.com" class="creator-link">Correo</a>
+                        <a href="#" class="creator-link">GitHub</a>
+                        <a href="https://www.facebook.com/tristan.espinosa.14/" class="creator-link">Facebook</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="hierarchy-line" aria-hidden="true"></div>
+
+        <section class="creator-section creator-section--linked">
+            <div class="creator-card">
+                <img class="creator-photo" src="/Assets/Imgs/team-seguridad.jpg" alt="Foto de [Nombre]"
+                     onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'creator-avatar', textContent: 'XX'}));">
+                <div class="creator-info">
+                    <h3>[Nombre]</h3>
+                    <p class="creator-role">Experto en seguridad</p>
+                    <p class="creator-bio">[Breve descripción de su rol en el proyecto.]</p>
+
+                    <div class="creator-links">
+                        <a href="mailto:#" class="creator-link">Correo</a>
+                        <a href="#" class="creator-link">Facebook</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="hierarchy-split" aria-hidden="true">
+            <svg viewBox="0 0 300 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="hierarchySplitGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#f472b6"/>
+                        <stop offset="100%" stop-color="#8b5cf6"/>
+                    </linearGradient>
+                </defs>
+                <path class="hierarchy-split-path"
+                      d="M150 0 L150 24 L64 24 L64 60 M150 24 L236 24 L236 60"
+                      fill="none" stroke="url(#hierarchySplitGrad)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <section class="team-admins-section">
+            <div class="team-admins-row">
+
+                <div class="creator-card creator-card--admin">
+                    <img class="creator-photo" src="/Assets/Imgs/team-admin1.jpg" alt="Foto de [Nombre]"
+                         onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'creator-avatar', textContent: 'XX'}));">
+                    <div class="creator-info">
+                        <h3>[Nombre]</h3>
+                        <p class="creator-role">Administrador</p>
+                        <p class="creator-bio">[Breve descripción de su rol en el proyecto.]</p>
+
+                        <div class="creator-links">
+                            <a href="mailto:#" class="creator-link">Correo</a>
+                            <a href="#" class="creator-link">Facebook</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="creator-card creator-card--admin">
+                    <img class="creator-photo" src="/Assets/Imgs/team-admin2.jpg" alt="Foto de [Nombre]"
+                         onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'creator-avatar', textContent: 'XX'}));">
+                    <div class="creator-info">
+                        <h3>[Nombre]</h3>
+                        <p class="creator-role">Administrador</p>
+                        <p class="creator-bio">[Breve descripción de su rol en el proyecto.]</p>
+
+                        <div class="creator-links">
+                            <a href="mailto:#" class="creator-link">Correo</a>
+                            <a href="#" class="creator-link">Facebook</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="feedback-section">
+            <div class="section-heading">
+                <h2>¿Tienes algo que decirnos?</h2>
+                <p>Cuéntanos qué anime te gustaría ver, o repórtanos un error que encontraste.</p>
+            </div>
+
+            <div class="feedback-card">
+                <p class="form-error" id="feedback-error" role="alert" hidden></p>
+                <p class="form-success" id="feedback-success" role="status" hidden></p>
+
+                <form id="feedback-form">
+                    <div class="field">
+                        <label for="feedback-type">Tipo</label>
+                        <div class="input-wrap">
+                            <select id="feedback-type" name="type" required>
+                                <option value="recommendation">Recomendación de anime</option>
+                                <option value="bug">Reporte de error</option>
+                                <option value="other">Otro comentario</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field" id="feedback-email-field">
+                        <label for="feedback-email">Correo (opcional)</label>
+                        <div class="input-wrap">
+                            <input type="email" id="feedback-email" name="email" maxlength="100" placeholder="Para responderte si hace falta">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="feedback-message">Mensaje</label>
+                        <div class="input-wrap input-wrap--textarea">
+                            <textarea id="feedback-message" name="message" required minlength="10" maxlength="1000" rows="4" placeholder="Escribe aquí tu recomendación o describe el error…"></textarea>
+                        </div>
+                        <p class="field-hint"><span id="feedback-count">0</span>/1000 caracteres</p>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="feedback-submit-btn">Enviar</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Anime Center. Todos los derechos reservados.</p>
+        <p>Desarrollado con ❤️ por el equipo de Anime Center OwO</p>
+    </footer>
+
+    <script type="module" src="/FrontEnd/Scripts/session.js"></script>
+    <script type="module" src="/FrontEnd/Scripts/nav-toggle.js"></script>
+    <script type="module" src="/FrontEnd/Scripts/feedback.js"></script>
+</body>
+</html>

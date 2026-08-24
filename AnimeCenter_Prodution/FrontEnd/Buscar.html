@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/Assets/Icons/Icon_AnimeCenter.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/FrontEnd/Style/Normalize.css">
+    <link rel="stylesheet" href="/FrontEnd/Style/style.css">
+    <link rel="stylesheet" href="/FrontEnd/Style/Responsive.css">
+    <title>Anime Center · Buscar</title>
+</head>
+<body>
+
+    <header class="site-header">
+        <nav class="navbar">
+            <a href="/index.html" class="nav-brand">
+                <svg viewBox="0 0 100 100" width="32" height="32" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="navMoonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f472b6"/>
+                            <stop offset="100%" stop-color="#8b5cf6"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M65 15 a35 35 0 1 0 20 55 a27 27 0 1 1 -20 -55 Z" fill="url(#navMoonGrad)"/>
+                </svg>
+                <span>Anime<em>Center</em></span>
+            </a>
+
+            <div class="nav-center">
+                <ul class="nav-links">
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/FrontEnd/Series.html">Series</a></li>
+                    <li><a href="/FrontEnd/Peliculas.html">Películas</a></li>
+                    <li><a href="/FrontEnd/Nosotros.html">Nosotros</a></li>
+                    <li id="nav-admin-item" hidden><a href="/FrontEnd/Admin.html">Admin</a></li>
+                </ul>
+
+                <form class="nav-search" action="/FrontEnd/Buscar.html" method="GET">
+                    <svg class="nav-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="7"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <input type="search" name="q" id="nav-search-input" placeholder="Buscar anime…" aria-label="Buscar anime">
+                </form>
+            </div>
+
+            <div class="nav-actions" id="nav-actions">
+                <a href="/FrontEnd/Login.html" class="btn-ghost" id="nav-login">Iniciar sesión</a>
+                <a href="/FrontEnd/Register.html" class="btn-gradient-sm" id="nav-register">Regístrate</a>
+
+                <div class="profile-menu" id="profile-menu" hidden>
+                    <button type="button" class="profile-trigger" id="profile-trigger" aria-haspopup="true" aria-expanded="false">
+                        <span class="profile-avatar" id="profile-avatar">A</span>
+                        <span class="profile-trigger-name" id="profile-trigger-name"></span>
+                    </button>
+                    <div class="profile-dropdown" id="profile-dropdown" hidden>
+                        <p class="profile-username" id="profile-username"></p>
+                        <a href="/FrontEnd/Perfil.html" class="profile-dropdown-link">Mi perfil</a>
+                        <button type="button" class="profile-dropdown-link profile-logout" id="logout-btn">Cerrar sesión</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="page-heading">
+            <h1>Resultados de búsqueda</h1>
+            <p id="search-summary">—</p>
+        </section>
+
+        <section class="catalog">
+            <div class="card-grid" id="search-results">
+                <p class="catalog-empty">Buscando…</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Anime Center. Todos los derechos reservados.</p>
+        <p>Desarrollado con ❤️ por el equipo de Anime Center OwO</p>
+    </footer>
+
+    <script type="module" src="/FrontEnd/Scripts/session.js"></script>
+    <script type="module" src="/FrontEnd/Scripts/buscar.js"></script>
+</body>
+</html>
