@@ -335,6 +335,7 @@
 
             <section class="admin-episodes-section">
                 <h2>Episodios</h2>
+                <p class="field-hint" style="margin-top: -8px; margin-bottom: 16px;">Series, OVAs y especiales.</p>
 
                 <div class="admin-form-card admin-episode-select-card">
                     <div class="field">
@@ -350,7 +351,7 @@
                     </div>
                 </div>
 
-                <div id="episode-manager" hidden>
+                <div id="episode-manager" class="admin-episode-manager" hidden>
 
                     <p class="form-error" id="episode-form-error" role="alert" hidden></p>
                     <p class="form-success" id="episode-form-success" role="status" hidden></p>
@@ -389,6 +390,63 @@
                     </form>
 
                     <div id="episode-list" class="admin-episode-list"></div>
+                </div>
+            </section>
+
+            <section class="admin-movies-section">
+                <h2>Películas</h2>
+                <p class="field-hint" style="margin-top: -8px; margin-bottom: 16px;">Sube aquí el video de las películas del catálogo.</p>
+
+                <div class="admin-form-card admin-episode-select-card">
+                    <div class="field">
+                        <label for="movie-anime-search">Selecciona una película</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <circle cx="11" cy="11" r="7"/>
+                                <path d="M21 21l-4.35-4.35"/>
+                            </svg>
+                            <input type="text" id="movie-anime-search" placeholder="Escribe para buscar una película…" autocomplete="off">
+                        </div>
+                        <div id="movie-anime-results" class="admin-combobox-results" hidden></div>
+                        <p class="field-hint">Solo aparecen títulos marcados como tipo "Película" en el catálogo.</p>
+                    </div>
+                </div>
+
+                <div id="movie-manager" class="admin-episode-manager" hidden>
+
+                    <p class="form-error" id="movie-form-error" role="alert" hidden></p>
+                    <p class="form-success" id="movie-form-success" role="status" hidden></p>
+
+                    <form id="movie-form" class="admin-form-card">
+                        <h3 id="movie-form-title">Subir película</h3>
+
+                        <div class="admin-form-grid">
+                            <input type="hidden" id="movie-number" name="episode_number" value="1">
+
+                            <div class="field field--full">
+                                <label for="movie-title">Título alterno (opcional)</label>
+                                <div class="input-wrap">
+                                    <input type="text" id="movie-title" name="title" maxlength="150">
+                                </div>
+                                <p class="field-hint">Déjalo vacío para usar el título de la película tal cual está en el catálogo.</p>
+                            </div>
+
+                            <div class="field field--full">
+                                <label for="movie-video">Archivo de video (mp4)</label>
+                                <div class="input-wrap">
+                                    <input type="file" id="movie-video" name="video" accept="video/mp4,video/webm">
+                                </div>
+                                <p class="field-hint">Puede tardar según el tamaño. Déjalo vacío al editar si no quieres cambiar el video.</p>
+                            </div>
+                        </div>
+
+                        <div class="admin-form-actions">
+                            <button type="button" id="movie-cancel-btn" class="btn-outline" hidden>Cancelar edición</button>
+                            <button type="submit" class="btn-submit" id="movie-save-btn">Subir película</button>
+                        </div>
+                    </form>
+
+                    <div id="movie-list" class="admin-episode-list"></div>
                 </div>
             </section>
 

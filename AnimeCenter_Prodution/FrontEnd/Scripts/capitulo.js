@@ -9,12 +9,14 @@ const page = document.querySelector('#player-page');
 
 const video = document.querySelector('#video-player');
 const playPauseBtn = document.querySelector('#play-pause-btn');
-const playIcon = document.querySelector('#play-icon');
-const pauseIcon = document.querySelector('#pause-icon');
 const skipBackBtn = document.querySelector('#skip-back-btn');
 const skipForwardBtn = document.querySelector('#skip-forward-btn');
 const seekBar = document.querySelector('#player-seek');
 const timeLabel = document.querySelector('#player-time');
+const fullscreenBtn = document.querySelector('#fullscreen-btn');
+const fullscreenEnterIcon = document.querySelector('#fullscreen-enter-icon');
+const fullscreenExitIcon = document.querySelector('#fullscreen-exit-icon');
+const playerWrap = document.querySelector('.player-wrap');
 
 const animeTitleEl = document.querySelector('#anime-title');
 const episodeLabelEl = document.querySelector('#episode-label');
@@ -149,17 +151,30 @@ function setupPlayerControls() {
         } else {
             video.pause();
         }
+
+        // Reinicia la animación de "pop" del botón en cada clic
+        playPauseBtn.classList.remove('is-bouncing');
+        // Forzar reflow para poder re-disparar la animación aunque se
+        // haga clic varias veces seguidas muy rápido
+        void playPauseBtn.offsetWidth;
+        playPauseBtn.classList.add('is-bouncing');
+    });
+
+    playPauseBtn.addEventListener('animationend', () => {
+        playPauseBtn.classList.remove('is-bouncing');
     });
 
     video.addEventListener('play', () => {
-        playIcon.hidden = true;
-        pauseIcon.hidden = false;
+        playPauseBtn.classList.add('is-playing');
+        playPauseBtn.setAttribute('aria-label', 'Pausar');
     });
 
     video.addEventListener('pause', () => {
-        playIcon.hidden = false;
-        pauseIcon.hidden = true;
+        playPauseBtn.classList.remove('is-playing');
+        playPauseBtn.setAttribute('aria-label', 'Reproducir');
     });
+
+    setupFullscreen();
 
     skipBackBtn.addEventListener('click', () => {
         video.currentTime = Math.max(0, video.currentTime - 10);
@@ -195,6 +210,114 @@ function setupPlayerControls() {
         }
         if (event.code === 'ArrowLeft') {
             skipBackBtn.click();
+        }
+        if (event.code === 'KeyF') {
+            fullscreenBtn?.click();
+        }
+    });
+}
+
+// ---------- Pantalla completa ----------
+// No confiamos en el pseudo-selector CSS ":fullscreen" (a veces no se
+// comporta igual entre navegadores/configuraciones). En vez de eso,
+// nosotros mismos ponemos y quitamos la clase "is-fullscreen" en
+// .player-wrap, y todo el CSS de pantalla completa está escrito contra
+// esa clase normal. Además intentamos activar la pantalla completa real
+// del navegador (para que se oculte la barra de direcciones, etc.),
+// pero el layout NO depende de que eso funcione: si el navegador la
+// bloquea o no la soporta, igual forzamos nuestro propio modo de
+// pantalla completa "falso" con position:fixed + z-index alto, que
+// cubre toda la pantalla igual.
+
+function nativeFullscreenElement() {
+    return (
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement ||
+        null
+    );
+}
+
+function setFullscreenState(active) {
+    playerWrap.classList.toggle('is-fullscreen', active);
+    document.body.classList.toggle('has-fullscreen-player', active);
+    fullscreenEnterIcon.hidden = active;
+    fullscreenExitIcon.hidden = !active;
+    fullscreenBtn.setAttribute('aria-label', active ? 'Salir de pantalla completa' : 'Pantalla completa');
+}
+
+async function requestNativeFullscreen() {
+    try {
+        const request =
+            playerWrap.requestFullscreen ||
+            playerWrap.webkitRequestFullscreen ||
+            playerWrap.mozRequestFullScreen ||
+            playerWrap.msRequestFullscreen;
+
+        if (request) {
+            await request.call(playerWrap);
+        }
+    } catch (err) {
+        console.warn('No se pudo activar la pantalla completa nativa del navegador, usando el modo alterno.', err);
+    }
+}
+
+async function exitNativeFullscreen() {
+    try {
+        const exit =
+            document.exitFullscreen ||
+            document.webkitExitFullscreen ||
+            document.mozCancelFullScreen ||
+            document.msExitFullscreen;
+
+        if (exit && nativeFullscreenElement()) {
+            await exit.call(document);
+        }
+    } catch (err) {
+        console.warn('No se pudo salir de la pantalla completa nativa del navegador.', err);
+    }
+}
+
+function setupFullscreen() {
+    if (!fullscreenBtn || !playerWrap) return;
+
+    fullscreenBtn.addEventListener('click', async () => {
+        const isActive = playerWrap.classList.contains('is-fullscreen');
+
+        if (!isActive) {
+            await requestNativeFullscreen();
+            // Sin importar si la API nativa del navegador funcionó,
+            // activamos nuestro propio modo de pantalla completa.
+            setFullscreenState(true);
+        } else {
+            await exitNativeFullscreen();
+            setFullscreenState(false);
+        }
+    });
+
+    // Doble clic sobre el video también alterna pantalla completa,
+    // como en la mayoría de reproductores.
+    video.addEventListener('dblclick', () => {
+        fullscreenBtn.click();
+    });
+
+    // Si el usuario sale de la pantalla completa nativa con Esc, o el
+    // navegador la cierra por su cuenta, sincronizamos nuestro modo.
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach((eventName) => {
+        document.addEventListener(eventName, () => {
+            if (!nativeFullscreenElement() && playerWrap.classList.contains('is-fullscreen')) {
+                setFullscreenState(false);
+            }
+        });
+    });
+
+    // Tecla Esc también cierra nuestro modo alterno aunque la pantalla
+    // completa nativa nunca se haya activado.
+    document.addEventListener('keydown', (event) => {
+        if (event.code === 'Escape' && playerWrap.classList.contains('is-fullscreen')) {
+            exitNativeFullscreen();
+            setFullscreenState(false);
         }
     });
 }

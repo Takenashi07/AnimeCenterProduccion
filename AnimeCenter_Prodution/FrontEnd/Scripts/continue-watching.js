@@ -15,12 +15,18 @@ async function loadContinueWatching() {
     // Obtener todos los animes en progreso del usuario
     const { data: progressList, error: progressError } = await supabase
         .from('watch_progress')
-        .select('anime_id, current_episode, current_time')
+        .select('anime_id, current_episode, progress_seconds')
         .eq('user_id', session.user.id)
         .in('status', ['watching', 'plan_to_watch'])
         .order('updated_at', { ascending: false });
 
-    if (progressError || !progressList || progressList.length === 0) {
+    if (progressError) {
+        console.error('[continue-watching] Error al consultar watch_progress:', progressError);
+        gridEl.innerHTML = `<p class="catalog-empty">No se pudo cargar tu progreso: ${progressError.message}</p>`;
+        return;
+    }
+
+    if (!progressList || progressList.length === 0) {
         gridEl.innerHTML = `<p class="catalog-empty">Aún no has comenzado a ver ningún anime.</p>`;
         return;
     }
@@ -33,7 +39,8 @@ async function loadContinueWatching() {
         .in('id', animeIds);
 
     if (animeError || !animes) {
-        gridEl.innerHTML = `<p class="catalog-empty">Error al cargar tus animes.</p>`;
+        console.error('[continue-watching] Error al consultar anime:', animeError);
+        gridEl.innerHTML = `<p class="catalog-empty">Error al cargar tus animes: ${animeError?.message || 'sin datos'}</p>`;
         return;
     }
 
@@ -44,7 +51,8 @@ async function loadContinueWatching() {
         .in('anime_id', animeIds);
 
     if (episodeError) {
-        gridEl.innerHTML = `<p class="catalog-empty">Error al cargar los episodios.</p>`;
+        console.error('[continue-watching] Error al consultar episodes:', episodeError);
+        gridEl.innerHTML = `<p class="catalog-empty">Error al cargar los episodios: ${episodeError.message}</p>`;
         return;
     }
 

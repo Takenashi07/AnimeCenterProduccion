@@ -1164,6 +1164,104 @@ body:has(.site-header) {
     padding: 20px 0;
 }
 
+/* --- Tarjetas de "Continuar viendo" --- */
+
+.progress-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.progress-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(244, 114, 182, 0.4);
+}
+
+.progress-card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: var(--field-bg);
+    overflow: hidden;
+}
+
+.progress-card-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to top, rgba(10, 8, 16, 0.75), rgba(10, 8, 16, 0.05) 60%);
+}
+
+.progress-card-play svg {
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    border-radius: 50%;
+    background: rgba(10, 8, 16, 0.55);
+    color: #fff;
+    opacity: 0.9;
+    transform: scale(0.92);
+    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.progress-card:hover .progress-card-play svg {
+    opacity: 1;
+    transform: scale(1);
+    background: var(--gradient);
+}
+
+.progress-card-body {
+    padding: 16px 18px 18px;
+}
+
+.progress-card-body h3 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.progress-card-episode {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.progress-card-track {
+    width: 100%;
+    height: 5px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-card-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 4px;
+}
+
+.progress-card-percent {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
 /* --- Página Nosotros --- */
 
 .stats-strip {
@@ -2552,6 +2650,96 @@ body:has(.site-header) {
     background: #000;
 }
 
+.player-wrap:fullscreen,
+.player-wrap:-webkit-full-screen,
+.player-wrap:-moz-full-screen,
+.player-wrap:-ms-fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    display: block;
+    border-radius: 0;
+    background: #000;
+}
+
+.player-wrap:fullscreen #video-player,
+.player-wrap:-webkit-full-screen #video-player,
+.player-wrap:-moz-full-screen #video-player,
+.player-wrap:-ms-fullscreen #video-player {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+}
+
+/* En pantalla completa los controles ya no empujan al video hacia
+   arriba: quedan fijos como una barra flotante pegada al borde
+   inferior de la pantalla, igual que en YouTube/Netflix. */
+.player-wrap:fullscreen .player-controls,
+.player-wrap:-webkit-full-screen .player-controls,
+.player-wrap:-moz-full-screen .player-controls,
+.player-wrap:-ms-fullscreen .player-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.55) 60%, transparent);
+    padding: 40px 24px 24px;
+}
+
+/* ---------- Modo de pantalla completa propio (JS) ---------- */
+/* No depende del soporte de :fullscreen del navegador. La clase
+   "is-fullscreen" la ponemos y quitamos nosotros mismos desde
+   capitulo.js, así que estas reglas SIEMPRE funcionan igual sin
+   importar el navegador. Usamos !important para blindarlas contra
+   cualquier otra regla que pudiera pisarlas. */
+body.has-fullscreen-player {
+    overflow: hidden !important;
+}
+
+.player-wrap.is-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    border-radius: 0 !important;
+    background: #000 !important;
+    z-index: 999999 !important;
+}
+
+.player-wrap.is-fullscreen #video-player {
+    display: block !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    background: #000 !important;
+}
+
+.player-wrap.is-fullscreen .player-controls {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    box-sizing: border-box !important;
+    z-index: 1000000 !important;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.6) 60%, transparent) !important;
+    padding: 40px 24px 24px !important;
+    margin: 0 !important;
+}
+
 .player-controls {
     display: flex;
     align-items: center;
@@ -2588,6 +2776,43 @@ body:has(.site-header) {
 .player-btn--play:hover {
     background: var(--gradient);
     opacity: 0.9;
+}
+
+.play-pause-icons {
+    position: relative;
+    display: grid;
+    width: 22px;
+    height: 22px;
+}
+
+.play-pause-icon {
+    grid-area: 1 / 1;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.play-pause-icon--pause {
+    opacity: 0;
+    transform: scale(0.6) rotate(-45deg);
+}
+
+.player-btn--play.is-playing .play-pause-icon--play {
+    opacity: 0;
+    transform: scale(0.6) rotate(45deg);
+}
+
+.player-btn--play.is-playing .play-pause-icon--pause {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+@keyframes player-play-btn-pop {
+    0% { transform: scale(1); }
+    45% { transform: scale(0.8); }
+    100% { transform: scale(1); }
+}
+
+.player-btn--play.is-bouncing {
+    animation: player-play-btn-pop 0.28s ease;
 }
 
 .player-time {
@@ -2683,20 +2908,23 @@ body:has(.site-header) {
 
 /* --- Sección de episodios en admin --- */
 
-.admin-episodes-section {
+.admin-episodes-section,
+.admin-movies-section {
     max-width: 900px;
     margin: 0 auto;
     padding: 0 32px 40px;
 }
 
-.admin-episodes-section h2 {
+.admin-episodes-section h2,
+.admin-movies-section h2 {
     font-family: var(--font-display);
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 16px;
 }
 
-.admin-episodes-section .field {
+.admin-episodes-section .field,
+.admin-movies-section .field {
     margin-bottom: 24px;
 }
 
@@ -2708,11 +2936,11 @@ body:has(.site-header) {
     margin-bottom: 0;
 }
 
-#episode-manager .admin-form-card {
+.admin-episode-manager .admin-form-card {
     margin-bottom: 24px;
 }
 
-#episode-manager .admin-form-card h3 {
+.admin-episode-manager .admin-form-card h3 {
     font-family: var(--font-display);
     font-size: 16px;
     font-weight: 700;
@@ -2721,6 +2949,12 @@ body:has(.site-header) {
 
 .admin-episode-list .admin-row {
     margin-bottom: 8px;
+}
+
+/* Separador visual entre la barra de Episodios y la de Películas */
+.admin-movies-section {
+    border-top: 1px solid var(--field-border);
+    padding-top: 40px;
 }
 
 .genre-reference {

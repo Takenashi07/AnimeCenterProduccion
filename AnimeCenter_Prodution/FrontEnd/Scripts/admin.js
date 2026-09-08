@@ -68,7 +68,7 @@ if (!session) {
         gate.hidden = true;
         panel.hidden = false;
         initAdminPanel();
-        initEpisodeManager();
+        initEpisodeManagers();
         initHomeMediaManager();
     }
 }
@@ -413,26 +413,81 @@ function initAdminPanel() {
 }
 
 // ============================================================
-// Episodios
+// Episodios y Películas
 // ============================================================
+// Ambas barras (Episodios / Películas) usan la misma lógica de fondo
+// (misma tabla "episodes"), solo cambia qué animes aparecen en el
+// buscador y algunos textos/campos del formulario. Por eso están
+// generadas desde la misma función genérica en vez de estar
+// duplicadas.
 
-async function initEpisodeManager() {
-    const searchInput = document.querySelector('#episode-anime-search');
-    const resultsEl = document.querySelector('#episode-anime-results');
-    const managerEl = document.querySelector('#episode-manager');
-    const episodeForm = document.querySelector('#episode-form');
-    const episodeFormTitle = document.querySelector('#episode-form-title');
-    const episodeCancelBtn = document.querySelector('#episode-cancel-btn');
-    const episodeSaveBtn = document.querySelector('#episode-save-btn');
-    const episodeErrorBox = document.querySelector('#episode-form-error');
-    const episodeSuccessBox = document.querySelector('#episode-form-success');
-    const episodeListEl = document.querySelector('#episode-list');
+function initEpisodeManagers() {
+    // Barra de Episodios: series, OVAs y especiales (todo menos películas).
+    createEpisodeManager({
+        searchInputSel: '#episode-anime-search',
+        resultsSel: '#episode-anime-results',
+        managerSel: '#episode-manager',
+        formSel: '#episode-form',
+        formTitleSel: '#episode-form-title',
+        cancelBtnSel: '#episode-cancel-btn',
+        saveBtnSel: '#episode-save-btn',
+        errorSel: '#episode-form-error',
+        successSel: '#episode-form-success',
+        listSel: '#episode-list',
+        sectionSel: '.admin-episodes-section',
+        typeFilter: (type) => type !== 'movie',
+        isMovieMode: false,
+        addLabel: 'Agregar capítulo',
+        emptyMessage: 'Este anime todavía no tiene capítulos.',
+    });
+
+    // Barra de Películas: solo animes con type = "movie". El número de
+    // capítulo se oculta y siempre se guarda como 1.
+    createEpisodeManager({
+        searchInputSel: '#movie-anime-search',
+        resultsSel: '#movie-anime-results',
+        managerSel: '#movie-manager',
+        formSel: '#movie-form',
+        formTitleSel: '#movie-form-title',
+        cancelBtnSel: '#movie-cancel-btn',
+        saveBtnSel: '#movie-save-btn',
+        errorSel: '#movie-form-error',
+        successSel: '#movie-form-success',
+        listSel: '#movie-list',
+        sectionSel: '.admin-movies-section',
+        typeFilter: (type) => type === 'movie',
+        isMovieMode: true,
+        addLabel: 'Subir película',
+        emptyMessage: 'Todavía no has subido el video de esta película.',
+    });
+}
+
+async function createEpisodeManager(options) {
+    const {
+        searchInputSel, resultsSel, managerSel, formSel, formTitleSel,
+        cancelBtnSel, saveBtnSel, errorSel, successSel, listSel, sectionSel,
+        typeFilter, isMovieMode, addLabel, emptyMessage,
+    } = options;
+
+    const searchInput = document.querySelector(searchInputSel);
+    const resultsEl = document.querySelector(resultsSel);
+    const managerEl = document.querySelector(managerSel);
+    const episodeForm = document.querySelector(formSel);
+    const episodeFormTitle = document.querySelector(formTitleSel);
+    const episodeCancelBtn = document.querySelector(cancelBtnSel);
+    const episodeSaveBtn = document.querySelector(saveBtnSel);
+    const episodeErrorBox = document.querySelector(errorSel);
+    const episodeSuccessBox = document.querySelector(successSel);
+    const episodeListEl = document.querySelector(listSel);
+
+    if (!searchInput || !managerEl || !episodeForm) return;
 
     const MAX_VIDEO_BYTES = 500 * 1024 * 1024; // 500 MB
 
     let animeList = [];
     let currentAnimeId = null;
     let currentAnimeSlug = null;
+    let currentAnimeTitle = null;
     let editingEpisodeId = null;
     let episodes = [];
 
@@ -450,22 +505,25 @@ async function initEpisodeManager() {
 
     function resetEpisodeForm() {
         episodeForm.reset();
+        if (isMovieMode) {
+            episodeForm.episode_number.value = '1';
+        }
         editingEpisodeId = null;
-        episodeFormTitle.textContent = 'Agregar capítulo';
-        episodeSaveBtn.textContent = 'Agregar capítulo';
+        episodeFormTitle.textContent = addLabel;
+        episodeSaveBtn.textContent = addLabel;
         episodeCancelBtn.hidden = true;
     }
 
-    // --- Carga la lista de animes una sola vez ---
+    // --- Carga la lista de animes del tipo que le toca a esta barra ---
     const { data: animeData, error: animeListError } = await supabase
         .from('anime')
-        .select('id, slug, title')
+        .select('id, slug, title, type')
         .order('title', { ascending: true });
 
     if (animeListError) {
         showEpisodeError('No se pudo cargar la lista de animes: ' + animeListError.message);
     }
-    animeList = animeData || [];
+    animeList = (animeData || []).filter((a) => typeFilter(a.type));
 
     // --- Buscador tipo autocompletar ---
 
@@ -487,6 +545,7 @@ async function initEpisodeManager() {
     function selectAnime(anime) {
         currentAnimeId = anime.id;
         currentAnimeSlug = anime.slug;
+        currentAnimeTitle = anime.title;
         searchInput.value = anime.title;
         resultsEl.hidden = true;
 
@@ -502,6 +561,7 @@ async function initEpisodeManager() {
         if (!query) {
             currentAnimeId = null;
             currentAnimeSlug = null;
+            currentAnimeTitle = null;
             managerEl.hidden = true;
             resultsEl.hidden = true;
             return;
@@ -534,13 +594,17 @@ async function initEpisodeManager() {
         }
     });
 
-    // --- Episodios del anime seleccionado ---
+    // --- Episodios/películas del anime seleccionado ---
 
     function episodeRowHTML(ep) {
+        const label = isMovieMode
+            ? (ep.title || currentAnimeTitle || 'Película')
+            : `Capítulo ${ep.episode_number}${ep.title ? ' · ' + ep.title : ''}`;
+
         return `
             <div class="admin-row" data-id="${ep.id}">
                 <div class="admin-row-info">
-                    <strong>Capítulo ${ep.episode_number}${ep.title ? ' · ' + ep.title : ''}</strong>
+                    <strong>${label}</strong>
                     <span>${ep.video_url ? 'Video cargado' : 'Sin video'}</span>
                 </div>
                 <div class="admin-row-actions">
@@ -552,7 +616,7 @@ async function initEpisodeManager() {
     }
 
     async function loadEpisodes() {
-        episodeListEl.innerHTML = '<p class="catalog-empty">Cargando episodios…</p>';
+        episodeListEl.innerHTML = '<p class="catalog-empty">Cargando…</p>';
 
         const { data, error } = await supabase
             .from('episodes')
@@ -568,7 +632,7 @@ async function initEpisodeManager() {
         episodes = data;
         episodeListEl.innerHTML = data.length
             ? data.map(episodeRowHTML).join('')
-            : '<p class="catalog-empty">Este anime todavía no tiene capítulos.</p>';
+            : `<p class="catalog-empty">${emptyMessage}</p>`;
     }
 
     episodeListEl.addEventListener('click', async (event) => {
@@ -581,17 +645,25 @@ async function initEpisodeManager() {
 
         if (btn.dataset.action === 'edit') {
             editingEpisodeId = ep.id;
-            episodeForm.episode_number.value = ep.episode_number;
+            if (!isMovieMode) {
+                episodeForm.episode_number.value = ep.episode_number;
+            }
             episodeForm.title.value = ep.title || '';
             episodeForm.video.value = '';
-            episodeFormTitle.textContent = `Editando capítulo ${ep.episode_number}`;
+            episodeFormTitle.textContent = isMovieMode ? 'Editando película' : `Editando capítulo ${ep.episode_number}`;
             episodeSaveBtn.textContent = 'Guardar cambios';
             episodeCancelBtn.hidden = false;
-            window.scrollTo({ top: document.querySelector('.admin-episodes-section').offsetTop - 20, behavior: 'smooth' });
+            const section = document.querySelector(sectionSel);
+            if (section) {
+                window.scrollTo({ top: section.offsetTop - 20, behavior: 'smooth' });
+            }
         }
 
         if (btn.dataset.action === 'delete') {
-            const confirmed = confirm(`¿Borrar el capítulo ${ep.episode_number}? Esto no se puede deshacer.`);
+            const confirmMessage = isMovieMode
+                ? `¿Borrar el video de "${ep.title || 'esta película'}"? Esto no se puede deshacer.`
+                : `¿Borrar el capítulo ${ep.episode_number}? Esto no se puede deshacer.`;
+            const confirmed = confirm(confirmMessage);
             if (!confirmed) return;
 
             const { error } = await supabase.from('episodes').delete().eq('id', id);
@@ -600,7 +672,7 @@ async function initEpisodeManager() {
                 return;
             }
 
-            showEpisodeSuccess(`Capítulo ${ep.episode_number} borrado.`);
+            showEpisodeSuccess(isMovieMode ? 'Película borrada.' : `Capítulo ${ep.episode_number} borrado.`);
             loadEpisodes();
         }
     });
@@ -615,7 +687,7 @@ async function initEpisodeManager() {
         episodeSuccessBox.hidden = true;
 
         if (!currentAnimeId) {
-            showEpisodeError('Primero selecciona un anime del buscador de arriba.');
+            showEpisodeError(isMovieMode ? 'Primero selecciona una película del buscador de arriba.' : 'Primero selecciona un anime del buscador de arriba.');
             return;
         }
 
@@ -634,15 +706,18 @@ async function initEpisodeManager() {
         episodeSaveBtn.disabled = true;
         episodeSaveBtn.textContent = 'Subiendo…';
 
+        const episodeNumber = isMovieMode ? 1 : parseInt(episodeForm.episode_number.value, 10);
+
         const payload = {
             anime_id: currentAnimeId,
-            episode_number: parseInt(episodeForm.episode_number.value, 10),
+            episode_number: episodeNumber,
             title: episodeForm.title.value.trim() || null,
         };
 
         if (videoFile) {
             const extension = videoFile.name.split('.').pop();
-            const path = `${currentAnimeSlug}/ep-${payload.episode_number}-${Date.now()}.${extension}`;
+            const prefix = isMovieMode ? 'movie' : 'ep';
+            const path = `${currentAnimeSlug}/${prefix}-${episodeNumber}-${Date.now()}.${extension}`;
 
             const { error: uploadError } = await supabase
                 .storage
@@ -651,7 +726,7 @@ async function initEpisodeManager() {
 
             if (uploadError) {
                 episodeSaveBtn.disabled = false;
-                episodeSaveBtn.textContent = editingEpisodeId ? 'Guardar cambios' : 'Agregar capítulo';
+                episodeSaveBtn.textContent = editingEpisodeId ? 'Guardar cambios' : addLabel;
                 showEpisodeError('No se pudo subir el video: ' + uploadError.message);
                 return;
             }
@@ -665,18 +740,18 @@ async function initEpisodeManager() {
             : await supabase.from('episodes').insert(payload);
 
         episodeSaveBtn.disabled = false;
-        episodeSaveBtn.textContent = editingEpisodeId ? 'Guardar cambios' : 'Agregar capítulo';
+        episodeSaveBtn.textContent = editingEpisodeId ? 'Guardar cambios' : addLabel;
 
         if (error) {
             showEpisodeError(
                 error.message.includes('duplicate') || error.message.includes('unique')
-                    ? 'Ya existe un capítulo con ese número para este anime.'
+                    ? (isMovieMode ? 'Esta película ya tiene un video subido. Edítalo en vez de agregar otro.' : 'Ya existe un capítulo con ese número para este anime.')
                     : error.message
             );
             return;
         }
 
-        showEpisodeSuccess(editingEpisodeId ? 'Cambios guardados.' : `Capítulo ${payload.episode_number} agregado.`);
+        showEpisodeSuccess(editingEpisodeId ? 'Cambios guardados.' : (isMovieMode ? 'Película subida.' : `Capítulo ${payload.episode_number} agregado.`));
         resetEpisodeForm();
         loadEpisodes();
     });
