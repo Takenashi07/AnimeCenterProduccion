@@ -118,7 +118,12 @@ async function runSearch() {
 
     resultsEl.innerHTML = data.length
         ? data.map(cardHTML).join('')
-        : '<p class="catalog-empty">Prueba con otro título.</p>';
+        : `
+            <div class="search-no-results">
+                <img src="/Assets/Imgs/Icon-sin-resultados.png" alt="" class="search-no-results-sticker" loading="lazy">
+                <p class="search-no-results-text">Prueba con otro término de búsqueda.</p>
+            </div>
+        `;
 }
 
 runSearch();

@@ -1164,7 +1164,7 @@ body:has(.site-header) {
     padding: 20px 0;
 }
 
-/* --- Estado vacío de Buscar.html (sin búsqueda todavía) --- */
+/* --- Estados vacíos de Buscar.html (sin búsqueda todavía / sin resultados) --- */
 
 .search-empty {
     display: flex;
@@ -1237,6 +1237,37 @@ body:has(.site-header) {
     background: linear-gradient(180deg, rgba(244, 114, 182, 0.12), rgba(139, 92, 246, 0.08));
     box-shadow: 0 10px 22px rgba(236, 72, 153, 0.18);
     transform: translateY(-1px);
+}
+
+/* Cuando SÍ se buscó algo pero no hubo resultados (distinto del estado
+   de arriba, que es cuando todavía no se ha escrito nada). */
+.search-no-results {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0 40px;
+    text-align: center;
+}
+
+.search-no-results-sticker {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    filter: drop-shadow(0 20px 45px rgba(139, 92, 246, 0.35));
+    animation: login-gate-float 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .search-no-results-sticker {
+        animation: none;
+    }
+}
+
+.search-no-results-text {
+    color: var(--text-muted);
+    font-size: 14px;
 }
 
 /* --- Tarjetas de "Continuar viendo" --- */

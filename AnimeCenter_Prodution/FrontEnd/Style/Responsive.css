@@ -501,10 +501,11 @@
         justify-content: center;
     }
 
-    /* Sticker del gate de login (y el de episodio no disponible), un
-       poco más chico en móvil */
+    /* Sticker del gate de login (y el de episodio no disponible / sin
+       resultados de búsqueda), un poco más chico en móvil */
     .login-gate-sticker,
-    .episode-gate-sticker {
+    .episode-gate-sticker,
+    .search-no-results-sticker {
         max-width: 220px;
     }
 
@@ -738,7 +739,8 @@
     }
 
     .login-gate-sticker,
-    .episode-gate-sticker {
+    .episode-gate-sticker,
+    .search-no-results-sticker {
         max-width: 170px;
     }
 
