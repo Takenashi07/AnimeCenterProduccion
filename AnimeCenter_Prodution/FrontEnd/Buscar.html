@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/FrontEnd/Style/Normalize.css">
-    <link rel="stylesheet" href="/FrontEnd/Style/style.css">
-    <link rel="stylesheet" href="/FrontEnd/Style/Responsive.css">
+    <link rel="stylesheet" href="/FrontEnd/Style/style.css?v=20260909">
+    <link rel="stylesheet" href="/FrontEnd/Style/Responsive.css?v=20260909">
     <title>Anime Center · Buscar</title>
 </head>
 <body>
@@ -28,6 +28,10 @@
                 </svg>
                 <span>Anime<em>Center</em></span>
             </a>
+
+                <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+                    <span></span><span></span><span></span>
+                </button>
 
             <div class="nav-center">
                 <ul class="nav-links">
@@ -73,6 +77,20 @@
             <p id="search-summary">—</p>
         </section>
 
+        <section class="search-empty" id="search-empty" hidden>
+            <p class="search-empty-text">Escribe algo en la barra de búsqueda para empezar.</p>
+
+            <div class="search-empty-block" id="recent-searches-block" hidden>
+                <h2>Búsquedas recientes</h2>
+                <div class="search-chips" id="recent-searches-list"></div>
+            </div>
+
+            <div class="search-empty-block">
+                <h2>Prueba buscando</h2>
+                <div class="search-chips" id="suggested-searches-list"></div>
+            </div>
+        </section>
+
         <section class="catalog">
             <div class="card-grid" id="search-results">
                 <p class="catalog-empty">Buscando…</p>
@@ -87,6 +105,7 @@
     </footer>
 
     <script type="module" src="/FrontEnd/Scripts/session.js"></script>
+    <script type="module" src="/FrontEnd/Scripts/nav-toggle.js"></script>
     <script type="module" src="/FrontEnd/Scripts/buscar.js"></script>
 </body>
 </html>

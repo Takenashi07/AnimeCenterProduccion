@@ -73,7 +73,7 @@ async function init() {
         .single();
 
     if (episodeError || !episode) {
-        gate.textContent = 'Ese capítulo todavía no está disponible.';
+        showEpisodeGate('Ese capítulo todavía no está disponible.');
         return;
     }
 
@@ -119,6 +119,19 @@ function showLoginGate() {
                 <a href="/FrontEnd/Login.html?redirect=${redirectTo}" class="btn-gradient">Iniciar sesión</a>
                 <a href="/FrontEnd/Register.html" class="btn-outline">Crear cuenta</a>
             </div>
+        </div>
+    `;
+}
+
+function showEpisodeGate(message) {
+    gate.innerHTML = `
+        <div class="episode-gate">
+            <img
+                src="/Assets/Imgs/Episodio_no_encontrado_icon.png"
+                alt=""
+                class="episode-gate-sticker"
+                loading="lazy">
+            <p class="episode-gate-text">${message}</p>
         </div>
     `;
 }
@@ -482,16 +495,16 @@ async function setupWatchProgress(userId, animeId, currentEpisode) {
     video.addEventListener('loadedmetadata', async () => {
         const { data: progress } = await supabase
             .from('watch_progress')
-            .select('current_time')
+            .select('progress_seconds')
             .eq('user_id', userId)
             .eq('anime_id', animeId)
             .maybeSingle();
 
-        if (progress && progress.current_time !== null && progress.current_time > 0) {
+        if (progress && progress.progress_seconds !== null && progress.progress_seconds > 0) {
             // Solo restaurar si el tiempo es válido y menor que la duración
-            if (progress.current_time < video.duration) {
-                video.currentTime = progress.current_time;
-                lastSavedTime = progress.current_time;
+            if (progress.progress_seconds < video.duration) {
+                video.currentTime = progress.progress_seconds;
+                lastSavedTime = progress.progress_seconds;
             }
         }
     });
@@ -510,7 +523,7 @@ async function setupWatchProgress(userId, animeId, currentEpisode) {
             anime_id: animeId,
             status: 'watching',
             current_episode: currentEpisode,
-            current_time: Math.round(video.currentTime),
+            progress_seconds: Math.round(video.currentTime),
             updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id,anime_id' });
 

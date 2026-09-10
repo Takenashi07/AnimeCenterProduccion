@@ -1164,6 +1164,81 @@ body:has(.site-header) {
     padding: 20px 0;
 }
 
+/* --- Estado vacío de Buscar.html (sin búsqueda todavía) --- */
+
+.search-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 20px 32px 80px;
+    text-align: center;
+}
+
+.search-empty-sticker {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    filter: drop-shadow(0 20px 45px rgba(139, 92, 246, 0.35));
+    animation: login-gate-float 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .search-empty-sticker {
+        animation: none;
+    }
+}
+
+.search-empty-text {
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+.search-empty-block {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.search-empty-block h2 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.search-chips {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-chip {
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(17, 16, 32, 0.72);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 16px rgba(12, 9, 18, 0.28);
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search-chip:hover,
+.search-chip:focus-visible {
+    border-color: rgba(244, 114, 182, 0.95);
+    color: var(--text-main);
+    background: linear-gradient(180deg, rgba(244, 114, 182, 0.12), rgba(139, 92, 246, 0.08));
+    box-shadow: 0 10px 22px rgba(236, 72, 153, 0.18);
+    transform: translateY(-1px);
+}
+
 /* --- Tarjetas de "Continuar viendo" --- */
 
 .progress-card {
@@ -1320,6 +1395,10 @@ body:has(.site-header) {
     line-height: 1.7;
 }
 
+.about-content p + p {
+    margin-top: 12px;
+}
+
 .features-section {
     max-width: 1200px;
     margin: 0 auto;
@@ -1356,6 +1435,10 @@ body:has(.site-header) {
     color: var(--text-muted);
     font-size: 13px;
     line-height: 1.5;
+}
+
+.feature-card p + p {
+    margin-top: 8px;
 }
 
 .creator-section {
@@ -1529,6 +1612,13 @@ body:has(.site-header) {
 @media (max-width: 700px) {
     .hierarchy-split {
         display: none;
+    }
+
+    /* El conector en forma de "Y" es lo único que separaba la tarjeta
+       de "Experto en seguridad" de la fila de administradores; al
+       ocultarlo en móvil quedaban pegados sin espacio entre ellos. */
+    .team-admins-section {
+        padding-top: 40px;
     }
 }
 
@@ -4152,12 +4242,20 @@ body.has-fullscreen-player {
     text-align: center;
 }
 
+/* El sticker (Icon-inicia-sesion.png) ya trae el mensaje escrito dentro
+   de la imagen, así que este <h2> se oculta visualmente para no repetir
+   el texto dos veces en pantalla. Se deja disponible para lectores de
+   pantalla en vez de "display:none" para no perder accesibilidad. */
 .login-gate-text h2 {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 8px;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .login-gate-text p {
@@ -4179,8 +4277,43 @@ body.has-fullscreen-player {
 
 /* Cuando el gate muestra el sticker, no necesita el padding grande
    que usa el mensaje de texto plano ("Cargando capítulo…"). */
-#player-gate:has(.login-gate) {
+#player-gate:has(.login-gate),
+#player-gate:has(.episode-gate) {
     padding: 20px 32px;
+}
+
+/* --- Gate de "episodio no disponible" (mismo patrón que .login-gate,
+   pero sin botones: solo sticker + un mensaje). --- */
+
+.episode-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 40px 24px 20px;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.episode-gate-sticker {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0 20px 45px rgba(139, 92, 246, 0.35));
+    animation: login-gate-float 3.2s ease-in-out infinite;
+}
+
+.episode-gate-text {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .episode-gate-sticker {
+        animation: none;
+    }
 }
 
 /* ============================================= */
