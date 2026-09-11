@@ -6,6 +6,7 @@ import { supabase } from './supabaseClient.js';
 // leía — esto es lo que los conecta con lo que ve el usuario.
 
 const SECTIONS = [
+    { key: 'estrenos', rowsSelector: '#estrenos-rows', showBadge: false },
     { key: 'tendencias', rowsSelector: '#tendencias-rows', showBadge: true },
     { key: 'recomendados', rowsSelector: '#recomendados-rows', showBadge: false },
 ];
