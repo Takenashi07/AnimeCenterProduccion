@@ -189,6 +189,20 @@
         </div>
     </section>
     <!-- ======================== -->
+    <!--   ESTRENOS               -->
+    <!-- ======================== -->
+    <section class="catalog" id="estrenos-section">
+
+        <div class="section-heading">
+            <h2>Estrenos <span>recientes</span></h2>
+            <p>Lo último que se sumó al catálogo.</p>
+        </div>
+
+        <div class="rows-container" id="estrenos-rows">
+            <p class="catalog-empty">Cargando…</p>
+        </div>
+    </section>
+    <!-- ======================== -->
     <!--   CONTINUAR VIENDO       -->
     <!-- ======================== -->
     <section class="catalog" id="continuar-viendo">
@@ -198,8 +212,14 @@
             <p>Retoma justo donde te quedaste.</p>
         </div>
 
-        <div class="card-grid" id="continue-watching-grid">
-            <p class="catalog-empty">Cargando…</p>
+        <div class="row-track-wrap">
+            <button type="button" class="row-arrow" id="continue-watching-prev" aria-label="Anterior" disabled>‹</button>
+
+            <div class="card-grid" id="continue-watching-grid">
+                <p class="catalog-empty">Cargando…</p>
+            </div>
+
+            <button type="button" class="row-arrow" id="continue-watching-next" aria-label="Siguiente" disabled>›</button>
         </div>
     </section>
     <!-- ======================== -->
@@ -213,73 +233,7 @@
         </div>
 
         <div class="rows-container" id="tendencias-rows">
-            <div class="anime-row">
-                <div class="row-track-wrap">
-                    <button type="button" class="row-arrow" aria-label="Anterior">‹</button>
-
-                    <div class="row-track">
-
-                        <a href="#" class="anime-card-link">
-                            <div class="anime-card">
-                                <div class="card-thumb-wrap">
-                                    <div class="card-thumb card-thumb--empty"></div>
-                                    <span class="trend-badge trend-badge--top">1</span>
-                                </div>
-                                <div class="card-body">
-                                    <span class="card-tag">Serie</span>
-                                    <h3>Sword Art Online</h3>
-                                    <p>Miles de jugadores quedan atrapados en un MMORPG de realidad virtual.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="anime-card-link">
-                            <div class="anime-card">
-                                <div class="card-thumb-wrap">
-                                    <div class="card-thumb card-thumb--empty"></div>
-                                    <span class="trend-badge trend-badge--top">2</span>
-                                </div>
-                                <div class="card-body">
-                                    <span class="card-tag">Serie</span>
-                                    <h3>Overlord</h3>
-                                    <p>Un jugador queda atrapado dentro de su MMORPG favorito, convertido en el señor supremo.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="anime-card-link">
-                            <div class="anime-card">
-                                <div class="card-thumb-wrap">
-                                    <div class="card-thumb card-thumb--empty"></div>
-                                    <span class="trend-badge trend-badge--top">3</span>
-                                </div>
-                                <div class="card-body">
-                                    <span class="card-tag">Serie</span>
-                                    <h3>Hellsing</h3>
-                                    <p>La organización Hellsing combate amenazas sobrenaturales para la Corona.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="anime-card-link">
-                            <div class="anime-card">
-                                <div class="card-thumb-wrap">
-                                    <div class="card-thumb card-thumb--empty"></div>
-                                    <span class="trend-badge">4</span>
-                                </div>
-                                <div class="card-body">
-                                    <span class="card-tag">Serie</span>
-                                    <h3>Saint Seiya - The Lost Canvas</h3>
-                                    <p>Desde los tiempos de leyenda, estas batallas se han repetido entre dioses.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                    </div>
-
-                    <button type="button" class="row-arrow" aria-label="Siguiente">›</button>
-                </div>
-            </div>
+            <p class="catalog-empty">Cargando…</p>
         </div>
     </section>
 
@@ -294,61 +248,7 @@
         </div>
 
         <div class="rows-container" id="recomendados-rows">
-            <div class="anime-row">
-                <div class="row-track-wrap">
-                    <button type="button" class="row-arrow" aria-label="Anterior">‹</button>
-
-                    <div class="row-track">
-
-                        <a href="#" class="anime-card-link">
-                            <div class="anime-card">
-                                <div class="card-thumb card-thumb--empty"></div>
-                                <div class="card-body">
-                                    <span class="card-tag">Serie</span>
-                                    <h3>Hellsing</h3>
-                                    <p>La organización Hellsing combate amenazas sobrenaturales para la Corona.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="anime-card-link">
-                            <div class="anime-card">
-                                <div class="card-thumb card-thumb--empty"></div>
-                                <div class="card-body">
-                                    <span class="card-tag">Serie</span>
-                                    <h3>Saint Seiya - The Lost Canvas</h3>
-                                    <p>Desde los tiempos de leyenda, estas batallas se han repetido entre dioses.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="anime-card-link">
-                            <div class="anime-card">
-                                <div class="card-thumb card-thumb--empty"></div>
-                                <div class="card-body">
-                                    <span class="card-tag">Serie</span>
-                                    <h3>Overlord</h3>
-                                    <p>Un jugador queda atrapado dentro de su MMORPG favorito, convertido en el señor supremo.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="#" class="anime-card-link">
-                            <div class="anime-card">
-                                <div class="card-thumb card-thumb--empty"></div>
-                                <div class="card-body">
-                                    <span class="card-tag">Serie</span>
-                                    <h3>Sword Art Online</h3>
-                                    <p>Miles de jugadores quedan atrapados en un MMORPG de realidad virtual.</p>
-                                </div>
-                            </div>
-                        </a>
-
-                    </div>
-
-                    <button type="button" class="row-arrow" aria-label="Siguiente">›</button>
-                </div>
-            </div>
+            <p class="catalog-empty">Cargando…</p>
         </div>
     </section>
 
@@ -416,8 +316,9 @@
 <script type="module" src="FrontEnd/Scripts/session.js"></script>
 <script src="FrontEnd/Scripts/nav-toggle.js"></script>
 <script type="module" src="FrontEnd/Scripts/catalog.js"></script>
-<script type="module" src="FrontEnd/Scripts/continue-watching.js"></script>
+<script type="module" src="FrontEnd/Scripts/continue-watching.js?v=20260911"></script>
 <script type="module" src="FrontEnd/Scripts/carrusel.js"></script>
+<script type="module" src="FrontEnd/Scripts/home-sections.js"></script>
 <script type="module" src="FrontEnd/Scripts/Ranking.js"></script>
 
 </body>

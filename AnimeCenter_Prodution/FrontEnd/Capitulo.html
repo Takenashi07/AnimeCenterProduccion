@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/FrontEnd/Style/Normalize.css">
-    <link rel="stylesheet" href="/FrontEnd/Style/style.css">
-    <link rel="stylesheet" href="/FrontEnd/Style/Responsive.css">
+    <link rel="stylesheet" href="/FrontEnd/Style/style.css?v=20260909">
+    <link rel="stylesheet" href="/FrontEnd/Style/Responsive.css?v=20260909">
     <title>Anime Center · Reproduciendo</title>
 </head>
 <body>
@@ -28,6 +28,10 @@
                 </svg>
                 <span>Anime<em>Center</em></span>
             </a>
+
+                <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+                    <span></span><span></span><span></span>
+                </button>
 
             <div class="nav-center">
                 <ul class="nav-links">
@@ -93,12 +97,14 @@
                         </button>
 
                         <button type="button" class="player-btn player-btn--play" id="play-pause-btn" aria-label="Reproducir">
-                            <svg id="play-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <svg id="pause-icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" hidden>
-                                <path d="M6 5h4v14H6zM14 5h4v14h-4z"/>
-                            </svg>
+                            <span class="play-pause-icons">
+                                <svg id="play-icon" class="play-pause-icon play-pause-icon--play" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <svg id="pause-icon" class="play-pause-icon play-pause-icon--pause" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                                    <path d="M6 5h4v14H6zM14 5h4v14h-4z"/>
+                                </svg>
+                            </span>
                         </button>
 
                         <button type="button" class="player-btn" id="skip-forward-btn" aria-label="Adelantar 10 segundos">
@@ -112,6 +118,15 @@
                         <span class="player-time" id="player-time">0:00 / 0:00</span>
 
                         <input type="range" id="player-seek" class="player-seek" min="0" max="100" value="0" step="0.1">
+
+                        <button type="button" class="player-btn player-btn--fullscreen" id="fullscreen-btn" aria-label="Pantalla completa">
+                            <svg id="fullscreen-enter-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>
+                            </svg>
+                            <svg id="fullscreen-exit-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden>
+                                <path d="M9 3v3a2 2 0 0 1-2 2H4M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -179,6 +194,7 @@
     </footer>
 
     <script type="module" src="/FrontEnd/Scripts/session.js"></script>
+    <script type="module" src="/FrontEnd/Scripts/nav-toggle.js"></script>
     <script type="module" src="/FrontEnd/Scripts/capitulo.js"></script>
 </body>
 </html>

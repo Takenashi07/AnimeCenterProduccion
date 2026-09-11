@@ -130,6 +130,7 @@
     .saved-section,
     .favorites-section,
     .feedback-section,
+    .search-empty,
     .admin-episodes-section {
         padding-left: 24px;
         padding-right: 24px;
@@ -368,6 +369,7 @@
     .saved-section,
     .favorites-section,
     .feedback-section,
+    .search-empty,
     .saved-toolbar,
     .view-toggle,
     .admin-episodes-section {
@@ -426,6 +428,10 @@
 
     .nav-brand {
         grid-area: brand;
+    }
+
+    #continue-watching-grid .progress-card {
+        flex: 0 0 200px;
     }
 
     .nav-actions {
@@ -499,8 +505,11 @@
         justify-content: center;
     }
 
-    /* Sticker del gate de login, un poco más chico en móvil */
-    .login-gate-sticker {
+    /* Sticker del gate de login (y el de episodio no disponible / sin
+       resultados de búsqueda), un poco más chico en móvil */
+    .login-gate-sticker,
+    .episode-gate-sticker,
+    .search-no-results-sticker {
         max-width: 220px;
     }
 
@@ -639,8 +648,13 @@
         width: 100%;
     }
 
+    /* box-sizing: border-box es la clave aquí: sin esto, el padding de
+       28px a cada lado (heredado de .btn-gradient/.btn-outline) se suma
+       por FUERA del 100% de ancho, y el botón termina saliéndose por el
+       borde derecho de la pantalla en vez de quedar centrado. */
     .player-gate-actions a {
         width: 100%;
+        box-sizing: border-box;
         justify-content: center;
     }
 }
@@ -661,6 +675,10 @@
 
     .card-grid {
         grid-template-columns: 1fr; /* una sola columna, evita tarjetas apretadas */
+    }
+
+    #continue-watching-grid .progress-card {
+        flex: 0 0 160px;
     }
 
     .stat-number {
@@ -728,7 +746,9 @@
         padding: 11px 16px;
     }
 
-    .login-gate-sticker {
+    .login-gate-sticker,
+    .episode-gate-sticker,
+    .search-no-results-sticker {
         max-width: 170px;
     }
 

@@ -210,6 +210,8 @@ body {
 
 .input-wrap input {
     flex: 1;
+    width: 100%;
+    min-width: 0;
     background: transparent;
     border: none;
     outline: none;
@@ -217,10 +219,61 @@ body {
     font-family: var(--font-body);
     font-size: 14px;
     padding: 14px 0;
+    /* Sin esto, Firefox (y algunos Chrome/Edge con temas del sistema)
+       dibuja su propio recuadro nativo encima del input además del que
+       ya pinta .input-wrap — se ve como una caja doble/fantasma. */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 .input-wrap input::placeholder {
     color: var(--text-muted);
+}
+
+/* Flechitas propias para los input[type=number] (Año, Episodios,
+   Temporada, Número de capítulo) — quitamos las nativas del navegador
+   (feas y sin poder pintarse, sobre todo en Firefox) y las cambiamos
+   por botones propios con los colores del sitio. */
+.input-wrap--number input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.input-wrap--number input[type="number"]::-webkit-outer-spin-button,
+.input-wrap--number input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.number-spin {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    margin-left: 8px;
+    border-left: 1px solid var(--field-border);
+    padding-left: 8px;
+}
+
+.number-spin-btn {
+    background: none;
+    border: none;
+    padding: 3px 2px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    transition: color 0.15s ease;
+}
+
+.number-spin-btn:hover,
+.number-spin-btn:focus-visible {
+    color: var(--pink);
+}
+
+.number-spin-btn:active {
+    color: var(--purple);
 }
 
 .toggle-password {
@@ -1048,6 +1101,38 @@ body:has(.site-header) {
     background: linear-gradient(160deg, rgba(139, 92, 246, 0.35), rgba(244, 114, 182, 0.35));
 }
 
+/* --- Numerito de posición sobre la portada, en "Tendencias" --- */
+
+.card-thumb-wrap {
+    position: relative;
+}
+
+.card-thumb-wrap .card-thumb {
+    margin: 0;
+}
+
+.trend-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(10, 8, 16, 0.75);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.trend-badge--top {
+    background: var(--gradient);
+}
+
 .card-body {
     flex: 1;
     padding: 18px 20px 22px;
@@ -1164,6 +1249,250 @@ body:has(.site-header) {
     padding: 20px 0;
 }
 
+/* --- Estados vacíos de Buscar.html (sin búsqueda todavía / sin resultados) --- */
+
+.search-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 20px 32px 80px;
+    text-align: center;
+}
+
+.search-empty-sticker {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    filter: drop-shadow(0 20px 45px rgba(139, 92, 246, 0.35));
+    animation: login-gate-float 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .search-empty-sticker {
+        animation: none;
+    }
+}
+
+.search-empty-text {
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+.search-empty-block {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.search-empty-block h2 {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.search-chips {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-chip {
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(17, 16, 32, 0.72);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 16px rgba(12, 9, 18, 0.28);
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search-chip:hover,
+.search-chip:focus-visible {
+    border-color: rgba(244, 114, 182, 0.95);
+    color: var(--text-main);
+    background: linear-gradient(180deg, rgba(244, 114, 182, 0.12), rgba(139, 92, 246, 0.08));
+    box-shadow: 0 10px 22px rgba(236, 72, 153, 0.18);
+    transform: translateY(-1px);
+}
+
+/* Cuando SÍ se buscó algo pero no hubo resultados (distinto del estado
+   de arriba, que es cuando todavía no se ha escrito nada). */
+.search-no-results {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0 40px;
+    text-align: center;
+}
+
+.search-no-results-sticker {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    filter: drop-shadow(0 20px 45px rgba(139, 92, 246, 0.35));
+    animation: login-gate-float 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .search-no-results-sticker {
+        animation: none;
+    }
+}
+
+.search-no-results-text {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* --- Tarjetas de "Continuar viendo" --- */
+
+.progress-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.progress-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(244, 114, 182, 0.4);
+}
+
+.progress-card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: var(--field-bg);
+    overflow: hidden;
+}
+
+.progress-card-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to top, rgba(10, 8, 16, 0.75), rgba(10, 8, 16, 0.05) 60%);
+}
+
+.progress-card-play svg {
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    border-radius: 50%;
+    background: rgba(10, 8, 16, 0.55);
+    color: #fff;
+    opacity: 0.9;
+    transform: scale(0.92);
+    transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.progress-card:hover .progress-card-play svg {
+    opacity: 1;
+    transform: scale(1);
+    background: var(--gradient);
+}
+
+.progress-card-body {
+    padding: 16px 18px 18px;
+}
+
+.progress-card-body h3 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.progress-card-episode {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.progress-card-track {
+    width: 100%;
+    height: 5px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-card-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 4px;
+}
+
+.progress-card-percent {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* "Continuar viendo" siempre en una sola fila que se desliza en
+   horizontal (como máximo 10 tarjetas, ver continue-watching.js), en vez
+   de envolver en más filas cuando hay varias series en progreso. */
+#continue-watching-grid {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    min-width: 0;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--field-border) transparent;
+}
+
+#continue-watching-grid .progress-card {
+    flex: 0 0 260px;
+    width: auto;
+    scroll-snap-align: start;
+}
+
+#continue-watching-grid::-webkit-scrollbar {
+    height: 6px;
+}
+
+#continue-watching-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#continue-watching-grid::-webkit-scrollbar-thumb {
+    background: var(--field-border);
+    border-radius: 4px;
+}
+
+#continue-watching-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(244, 114, 182, 0.4);
+}
+
 /* --- Página Nosotros --- */
 
 .stats-strip {
@@ -1222,6 +1551,10 @@ body:has(.site-header) {
     line-height: 1.7;
 }
 
+.about-content p + p {
+    margin-top: 12px;
+}
+
 .features-section {
     max-width: 1200px;
     margin: 0 auto;
@@ -1258,6 +1591,10 @@ body:has(.site-header) {
     color: var(--text-muted);
     font-size: 13px;
     line-height: 1.5;
+}
+
+.feature-card p + p {
+    margin-top: 8px;
 }
 
 .creator-section {
@@ -1432,6 +1769,13 @@ body:has(.site-header) {
     .hierarchy-split {
         display: none;
     }
+
+    /* El conector en forma de "Y" es lo único que separaba la tarjeta
+       de "Experto en seguridad" de la fila de administradores; al
+       ocultarlo en móvil quedaban pegados sin espacio entre ellos. */
+    .team-admins-section {
+        padding-top: 40px;
+    }
 }
 
 .profile-avatar img {
@@ -1538,9 +1882,25 @@ body:has(.site-header) {
     margin: 0 auto;
     padding: 24px 32px 40px;
     display: grid;
-    grid-template-columns: 460px minmax(0, 760px) 480px;
+    /* Antes 460px / hasta 760px / 480px, fijo: en monitores y laptops
+       comunes (1366-1600px) las columnas de los lados no se encogían y
+       exprimían la del medio hasta romperla. Las 3 usan minmax(min, 1fr)
+       con el MISMO peso (1fr) para que se repartan el espacio sobrante
+       en partes iguales y se encojan/crezcan juntas — si el máximo de
+       una columna fuera un px fijo (ej. 460px) en vez de 1fr, esa columna
+       se llena primero y la que sí es 1fr se queda con las sobras (así
+       pasaba antes: solo la del medio se achicaba, las de los lados se
+       quedaban en su tamaño de siempre). Cada columna solo respeta su
+       mínimo (300/280/320) para no romperse — ver el @container más abajo
+       para el formulario del medio, que se reacomoda solo cuando el
+       espacio real que le toca es angosto. */
+    grid-template-columns: minmax(300px, 1fr) minmax(280px, 1fr) minmax(320px, 1fr);
     gap: 24px;
     justify-content: center;
+}
+
+.admin-form-section {
+    container-type: inline-size;
 }
 
 .admin-media-sticky-wrap {
@@ -2011,6 +2371,16 @@ body:has(.site-header) {
     gap: 18px;
 }
 
+/* El ancho de esta columna del medio depende de cuánto midan las de los
+   lados (ver .admin-media-layout) — no solo del ancho de la ventana. Por
+   eso usamos un "container query": el formulario pasa a 1 columna cuando
+   SU espacio real es angosto, no cuando toda la pantalla lo es. */
+@container (max-width: 480px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .field--full {
     grid-column: 1 / -1;
 }
@@ -2094,6 +2464,8 @@ body:has(.site-header) {
 
 .input-wrap--textarea textarea {
     flex: 1;
+    width: 100%;
+    min-width: 0;
     background: transparent;
     border: none;
     outline: none;
@@ -2103,6 +2475,9 @@ body:has(.site-header) {
     font-size: 14px;
     line-height: 1.5;
     min-height: 76px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 .input-wrap--textarea textarea::placeholder {
@@ -2552,6 +2927,96 @@ body:has(.site-header) {
     background: #000;
 }
 
+.player-wrap:fullscreen,
+.player-wrap:-webkit-full-screen,
+.player-wrap:-moz-full-screen,
+.player-wrap:-ms-fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    display: block;
+    border-radius: 0;
+    background: #000;
+}
+
+.player-wrap:fullscreen #video-player,
+.player-wrap:-webkit-full-screen #video-player,
+.player-wrap:-moz-full-screen #video-player,
+.player-wrap:-ms-fullscreen #video-player {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+}
+
+/* En pantalla completa los controles ya no empujan al video hacia
+   arriba: quedan fijos como una barra flotante pegada al borde
+   inferior de la pantalla, igual que en YouTube/Netflix. */
+.player-wrap:fullscreen .player-controls,
+.player-wrap:-webkit-full-screen .player-controls,
+.player-wrap:-moz-full-screen .player-controls,
+.player-wrap:-ms-fullscreen .player-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.55) 60%, transparent);
+    padding: 40px 24px 24px;
+}
+
+/* ---------- Modo de pantalla completa propio (JS) ---------- */
+/* No depende del soporte de :fullscreen del navegador. La clase
+   "is-fullscreen" la ponemos y quitamos nosotros mismos desde
+   capitulo.js, así que estas reglas SIEMPRE funcionan igual sin
+   importar el navegador. Usamos !important para blindarlas contra
+   cualquier otra regla que pudiera pisarlas. */
+body.has-fullscreen-player {
+    overflow: hidden !important;
+}
+
+.player-wrap.is-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    border-radius: 0 !important;
+    background: #000 !important;
+    z-index: 999999 !important;
+}
+
+.player-wrap.is-fullscreen #video-player {
+    display: block !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    background: #000 !important;
+}
+
+.player-wrap.is-fullscreen .player-controls {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    box-sizing: border-box !important;
+    z-index: 1000000 !important;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.6) 60%, transparent) !important;
+    padding: 40px 24px 24px !important;
+    margin: 0 !important;
+}
+
 .player-controls {
     display: flex;
     align-items: center;
@@ -2588,6 +3053,43 @@ body:has(.site-header) {
 .player-btn--play:hover {
     background: var(--gradient);
     opacity: 0.9;
+}
+
+.play-pause-icons {
+    position: relative;
+    display: grid;
+    width: 22px;
+    height: 22px;
+}
+
+.play-pause-icon {
+    grid-area: 1 / 1;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.play-pause-icon--pause {
+    opacity: 0;
+    transform: scale(0.6) rotate(-45deg);
+}
+
+.player-btn--play.is-playing .play-pause-icon--play {
+    opacity: 0;
+    transform: scale(0.6) rotate(45deg);
+}
+
+.player-btn--play.is-playing .play-pause-icon--pause {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+@keyframes player-play-btn-pop {
+    0% { transform: scale(1); }
+    45% { transform: scale(0.8); }
+    100% { transform: scale(1); }
+}
+
+.player-btn--play.is-bouncing {
+    animation: player-play-btn-pop 0.28s ease;
 }
 
 .player-time {
@@ -2683,20 +3185,23 @@ body:has(.site-header) {
 
 /* --- Sección de episodios en admin --- */
 
-.admin-episodes-section {
+.admin-episodes-section,
+.admin-movies-section {
     max-width: 900px;
     margin: 0 auto;
     padding: 0 32px 40px;
 }
 
-.admin-episodes-section h2 {
+.admin-episodes-section h2,
+.admin-movies-section h2 {
     font-family: var(--font-display);
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 16px;
 }
 
-.admin-episodes-section .field {
+.admin-episodes-section .field,
+.admin-movies-section .field {
     margin-bottom: 24px;
 }
 
@@ -2708,11 +3213,11 @@ body:has(.site-header) {
     margin-bottom: 0;
 }
 
-#episode-manager .admin-form-card {
+.admin-episode-manager .admin-form-card {
     margin-bottom: 24px;
 }
 
-#episode-manager .admin-form-card h3 {
+.admin-episode-manager .admin-form-card h3 {
     font-family: var(--font-display);
     font-size: 16px;
     font-weight: 700;
@@ -2721,6 +3226,12 @@ body:has(.site-header) {
 
 .admin-episode-list .admin-row {
     margin-bottom: 8px;
+}
+
+/* Separador visual entre la barra de Episodios y la de Películas */
+.admin-movies-section {
+    border-top: 1px solid var(--field-border);
+    padding-top: 40px;
 }
 
 .genre-reference {
@@ -3918,12 +4429,20 @@ body:has(.site-header) {
     text-align: center;
 }
 
+/* El sticker (Icon-inicia-sesion.png) ya trae el mensaje escrito dentro
+   de la imagen, así que este <h2> se oculta visualmente para no repetir
+   el texto dos veces en pantalla. Se deja disponible para lectores de
+   pantalla en vez de "display:none" para no perder accesibilidad. */
 .login-gate-text h2 {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 8px;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .login-gate-text p {
@@ -3945,8 +4464,43 @@ body:has(.site-header) {
 
 /* Cuando el gate muestra el sticker, no necesita el padding grande
    que usa el mensaje de texto plano ("Cargando capítulo…"). */
-#player-gate:has(.login-gate) {
+#player-gate:has(.login-gate),
+#player-gate:has(.episode-gate) {
     padding: 20px 32px;
+}
+
+/* --- Gate de "episodio no disponible" (mismo patrón que .login-gate,
+   pero sin botones: solo sticker + un mensaje). --- */
+
+.episode-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 40px 24px 20px;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.episode-gate-sticker {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0 20px 45px rgba(139, 92, 246, 0.35));
+    animation: login-gate-float 3.2s ease-in-out infinite;
+}
+
+.episode-gate-text {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .episode-gate-sticker {
+        animation: none;
+    }
 }
 
 /* ============================================= */
