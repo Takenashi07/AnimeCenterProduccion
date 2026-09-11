@@ -430,6 +430,10 @@
         grid-area: brand;
     }
 
+    #continue-watching-grid .progress-card {
+        flex: 0 0 200px;
+    }
+
     .nav-actions {
         grid-area: actions;
     }
@@ -671,6 +675,10 @@
 
     .card-grid {
         grid-template-columns: 1fr; /* una sola columna, evita tarjetas apretadas */
+    }
+
+    #continue-watching-grid .progress-card {
+        flex: 0 0 160px;
     }
 
     .stat-number {

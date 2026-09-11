@@ -1368,6 +1368,46 @@ body:has(.site-header) {
     color: var(--text-muted);
 }
 
+/* "Continuar viendo" siempre en una sola fila que se desliza en
+   horizontal (como máximo 10 tarjetas, ver continue-watching.js), en vez
+   de envolver en más filas cuando hay varias series en progreso. */
+#continue-watching-grid {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    min-width: 0;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--field-border) transparent;
+}
+
+#continue-watching-grid .progress-card {
+    flex: 0 0 260px;
+    width: auto;
+    scroll-snap-align: start;
+}
+
+#continue-watching-grid::-webkit-scrollbar {
+    height: 6px;
+}
+
+#continue-watching-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#continue-watching-grid::-webkit-scrollbar-thumb {
+    background: var(--field-border);
+    border-radius: 4px;
+}
+
+#continue-watching-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(244, 114, 182, 0.4);
+}
+
 /* --- Página Nosotros --- */
 
 .stats-strip {
