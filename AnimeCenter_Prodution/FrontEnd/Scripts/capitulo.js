@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { getActiveTier, tierMeets } from './entitlements.js';
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('slug');
@@ -51,6 +52,14 @@ async function init() {
 
     if (!session) {
         showLoginGate();
+        return;
+    }
+
+    // Ver series requiere al menos el plan "basic" (o "adult", que lo incluye).
+    const tier = await getActiveTier();
+
+    if (!tierMeets(tier, 'basic')) {
+        showPaywallGate();
         return;
     }
 
@@ -118,6 +127,25 @@ function showLoginGate() {
             <div class="player-gate-actions">
                 <a href="/FrontEnd/Login.html?redirect=${redirectTo}" class="btn-gradient">Iniciar sesión</a>
                 <a href="/FrontEnd/Register.html" class="btn-outline">Crear cuenta</a>
+            </div>
+        </div>
+    `;
+}
+
+function showPaywallGate() {
+    gate.innerHTML = `
+        <div class="login-gate">
+            <img
+                src="/Assets/Imgs/Icon-inicia-sesion.png"
+                alt=""
+                class="login-gate-sticker"
+                loading="lazy">
+            <div class="login-gate-text">
+                <h2>Este contenido es para suscriptores</h2>
+                <p>Necesitas una membresía Premium para ver las series de Anime Center.</p>
+            </div>
+            <div class="player-gate-actions">
+                <a href="/FrontEnd/Premium.html" class="btn-gradient">Ver planes</a>
             </div>
         </div>
     `;

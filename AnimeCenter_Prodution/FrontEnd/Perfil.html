@@ -39,6 +39,7 @@
                     <li><a href="/FrontEnd/Series.html">Series</a></li>
                     <li><a href="/FrontEnd/Peliculas.html">Películas</a></li>
                     <li><a href="/FrontEnd/Nosotros.html">Nosotros</a></li>
+                    <li><a href="/FrontEnd/Premium.html">Premium</a></li>
                     <li id="nav-admin-item" hidden><a href="/FrontEnd/Admin.html">Admin</a></li>
                 </ul>
 
@@ -124,6 +125,16 @@
                     <button type="submit" class="btn-submit" id="profile-save-btn">Guardar cambios</button>
                 </form>
 
+            </div>
+
+            <div class="profile-card membership-card">
+                <h2 class="membership-title">Tu membresía</h2>
+                <p class="membership-status" id="membership-status">Cargando…</p>
+                <p class="form-error" id="membership-error" role="alert" hidden></p>
+                <div class="membership-actions">
+                    <a href="/FrontEnd/Premium.html" class="btn-gradient-sm" id="membership-cta">Ver planes</a>
+                    <button type="button" class="btn-outline" id="membership-cancel-btn" hidden>Cancelar suscripción</button>
+                </div>
             </div>
         </section>
 

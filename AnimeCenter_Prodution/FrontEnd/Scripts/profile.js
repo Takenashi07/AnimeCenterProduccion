@@ -1,4 +1,5 @@
-import { supabase } from './supabaseClient.js';
+import { supabase, SUPABASE_URL } from './supabaseClient.js';
+import { getActiveTier, TIER_LABELS } from './entitlements.js';
 
 const avatarEl = document.querySelector('#profile-page-avatar');
 const avatarInput = document.querySelector('#avatar-input');
@@ -50,6 +51,8 @@ if (!session) {
     usernameInput.value = currentUsername;
     emailInput.value = user.email;
     renderAvatar(avatarUrl, currentUsername.charAt(0).toUpperCase());
+
+    renderMembership();
 
     avatarInput.addEventListener('change', async () => {
         const file = avatarInput.files[0];
@@ -138,4 +141,66 @@ if (!session) {
         renderAvatar(avatarUrl, newUsername.charAt(0).toUpperCase());
         showSuccess('Tus cambios se guardaron correctamente.');
     });
+
+    async function renderMembership() {
+        const statusEl = document.querySelector('#membership-status');
+        const ctaEl = document.querySelector('#membership-cta');
+        const cancelBtn = document.querySelector('#membership-cancel-btn');
+        const membershipErrorEl = document.querySelector('#membership-error');
+        if (!statusEl) return;
+
+        const { data: profileRow } = await supabase
+            .from('profiles')
+            .select('is_admin')
+            .eq('id', user.id)
+            .single();
+
+        const tier = await getActiveTier();
+
+        if (profileRow?.is_admin) {
+            statusEl.textContent = 'Acceso de administrador (sin costo).';
+            ctaEl.hidden = true;
+            cancelBtn.hidden = true;
+        } else if (tier === 'free') {
+            statusEl.textContent = 'No tienes una membresía activa.';
+            ctaEl.hidden = false;
+            ctaEl.textContent = 'Ver planes';
+            cancelBtn.hidden = true;
+        } else {
+            statusEl.textContent = `Plan activo: ${TIER_LABELS[tier]}.`;
+            ctaEl.hidden = false;
+            ctaEl.textContent = tier === 'adult' ? 'Ver planes' : 'Mejorar plan';
+            cancelBtn.hidden = false;
+        }
+
+        cancelBtn.onclick = async () => {
+            membershipErrorEl.hidden = true;
+
+            const confirmed = window.confirm('¿Seguro que quieres cancelar tu suscripción? Perderás el acceso al contenido premium.');
+            if (!confirmed) return;
+
+            cancelBtn.disabled = true;
+            cancelBtn.textContent = 'Cancelando…';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/mp-cancel-subscription`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${session.access_token}` },
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    membershipErrorEl.textContent = data.error || 'No se pudo cancelar tu suscripción.';
+                    membershipErrorEl.hidden = false;
+                    return;
+                }
+
+                await renderMembership();
+            } finally {
+                cancelBtn.disabled = false;
+                cancelBtn.textContent = 'Cancelar suscripción';
+            }
+        };
+    }
 }

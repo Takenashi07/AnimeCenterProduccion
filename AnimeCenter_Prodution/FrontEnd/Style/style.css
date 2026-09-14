@@ -4711,3 +4711,134 @@ body.has-fullscreen-player {
         padding: 0 20px 60px;
     }
 }
+
+/* --- Membresía (Mi perfil) --- */
+
+.membership-card {
+    max-width: 480px;
+    margin: 24px auto 0;
+}
+
+.membership-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.membership-status {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.membership-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* --- Premium (planes) --- */
+
+.premium-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 32px 100px;
+    text-align: center;
+}
+
+.premium-plans {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+    text-align: left;
+}
+
+.premium-plan {
+    position: relative;
+    padding: 36px 32px;
+    border-radius: 20px;
+    border: 1px solid var(--field-border);
+    background: var(--card-bg);
+    backdrop-filter: blur(18px);
+}
+
+.premium-plan--featured {
+    border-color: var(--pink);
+    box-shadow: 0 20px 50px rgba(139, 92, 246, 0.25);
+}
+
+.premium-plan-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    margin-bottom: 12px;
+    border-radius: 999px;
+    background: var(--gradient);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.premium-plan h2 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.premium-plan-price {
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.premium-plan-price span {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.premium-plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.premium-plan-features li {
+    padding-left: 22px;
+    position: relative;
+}
+
+.premium-plan-features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--pink);
+    font-weight: 700;
+}
+
+.premium-plan-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.premium-note {
+    margin-top: 28px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+@media (max-width: 720px) {
+    .premium-plans {
+        grid-template-columns: 1fr;
+    }
+}

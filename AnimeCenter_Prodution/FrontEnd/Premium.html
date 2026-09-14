@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/FrontEnd/Style/Normalize.css">
     <link rel="stylesheet" href="/FrontEnd/Style/style.css">
     <link rel="stylesheet" href="/FrontEnd/Style/Responsive.css">
-    <title>Anime Center · Series</title>
+    <title>Anime Center · Premium</title>
 </head>
 <body>
 
@@ -29,9 +29,9 @@
                 <span>Anime<em>Center</em></span>
             </a>
 
-            <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
-                <span></span><span></span><span></span>
-            </button>
+                <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+                    <span></span><span></span><span></span>
+                </button>
 
             <div class="nav-center">
                 <ul class="nav-links">
@@ -64,7 +64,7 @@
                 <a href="/FrontEnd/Register.html" class="btn-gradient-sm" id="nav-register">Regístrate</a>
 
                 <div class="profile-menu" id="profile-menu" hidden>
-                   <button type="button" class="profile-trigger" id="profile-trigger" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="profile-trigger" id="profile-trigger" aria-haspopup="true" aria-expanded="false">
                         <span class="profile-avatar" id="profile-avatar">A</span>
                         <span class="profile-trigger-name" id="profile-trigger-name"></span>
                     </button>
@@ -80,73 +80,40 @@
 
     <main>
 
-        <section class="page-heading page-heading--hero page-heading--hero-low">
-            <h1>Series</h1>
-            <p>Todas las temporadas disponibles en Anime Center.</p>
+        <section class="page-heading page-heading--hero">
+            <h1>Anime Center Premium</h1>
+            <p>Desbloquea todo el catálogo con una suscripción mensual.</p>
         </section>
 
-        <nav class="genre-subnav hero-overlap">
-            <a href="#shonen">Shōnen</a>
-            <a href="#shojo">Shōjo</a>
-            <a href="#seinen">Seinen</a>
-            <a href="#josei">Josei</a>
-            <a href="#kodomo">Kodomo</a>
-            <a href="#sin-clasificar">Sin clasificar</a>
-        </nav>
+        <section class="premium-section hero-overlap">
+            <p class="form-error" id="form-error" role="alert" hidden></p>
 
-        <section class="catalog" id="shonen">
-            <div class="section-heading">
-                <h2>Shōnen</h2>
-            </div>
-            <div class="rows-container" id="shonen-rows">
-                <p class="catalog-empty">Cargando…</p>
-            </div>
-        </section>
+            <div class="premium-plans">
+                <article class="premium-plan">
+                    <h2>Ver series</h2>
+                    <p class="premium-plan-price">$50 <span>MXN / mes</span></p>
+                    <ul class="premium-plan-features">
+                        <li>Acceso ilimitado a todas las series y capítulos</li>
+                        <li>Calidad completa, sin restricciones</li>
+                        <li>Cancela cuando quieras</li>
+                    </ul>
+                    <button type="button" class="btn-outline premium-plan-btn" data-tier="basic">Suscribirme</button>
+                </article>
 
-        <section class="catalog" id="shojo">
-            <div class="section-heading">
-                <h2>Shōjo</h2>
+                <article class="premium-plan premium-plan--featured">
+                    <p class="premium-plan-badge">Todo incluido</p>
+                    <h2>Series + contenido adulto</h2>
+                    <p class="premium-plan-price">$100 <span>MXN / mes</span></p>
+                    <ul class="premium-plan-features">
+                        <li>Todo lo del plan "Ver series"</li>
+                        <li>Acceso al contenido adulto (próximamente)</li>
+                        <li>Cancela cuando quieras</li>
+                    </ul>
+                    <button type="button" class="btn-gradient premium-plan-btn" data-tier="adult">Suscribirme</button>
+                </article>
             </div>
-            <div class="rows-container" id="shojo-rows">
-                <p class="catalog-empty">Cargando…</p>
-            </div>
-        </section>
 
-        <section class="catalog" id="seinen">
-            <div class="section-heading">
-                <h2>Seinen</h2>
-            </div>
-            <div class="rows-container" id="seinen-rows">
-                <p class="catalog-empty">Cargando…</p>
-            </div>
-        </section>
-
-        <section class="catalog" id="josei">
-            <div class="section-heading">
-                <h2>Josei</h2>
-            </div>
-            <div class="rows-container" id="josei-rows">
-                <p class="catalog-empty">Cargando…</p>
-            </div>
-        </section>
-
-        <section class="catalog" id="kodomo">
-            <div class="section-heading">
-                <h2>Kodomo</h2>
-            </div>
-            <div class="rows-container" id="kodomo-rows">
-                <p class="catalog-empty">Cargando…</p>
-            </div>
-        </section>
-
-        <section class="catalog" id="sin-clasificar">
-            <div class="section-heading">
-                <h2>Sin clasificar</h2>
-                <p>Series a las que todavía no les has asignado una demografía.</p>
-            </div>
-            <div class="rows-container" id="sin-clasificar-rows">
-                <p class="catalog-empty">Cargando…</p>
-            </div>
+            <p class="premium-note">Los pagos se procesan de forma segura con MercadoPago. Se te redirigirá a su sitio para completar la suscripción.</p>
         </section>
 
     </main>
@@ -157,7 +124,7 @@
     </footer>
 
     <script type="module" src="/FrontEnd/Scripts/session.js"></script>
-    <script src="/FrontEnd/Scripts/nav-toggle.js"></script>
-    <script type="module" src="/FrontEnd/Scripts/series.js"></script>
+    <script type="module" src="/FrontEnd/Scripts/nav-toggle.js"></script>
+    <script type="module" src="/FrontEnd/Scripts/premium.js"></script>
 </body>
 </html>
