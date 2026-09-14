@@ -86,7 +86,7 @@
         </section>
 
         <section class="profile-section hero-overlap">
-            <div class="profile-card">
+            <div class="profile-card profile-info-card">
 
                 <div class="profile-photo-wrap">
                     <div class="profile-card-avatar" id="profile-page-avatar">…</div>
@@ -127,13 +127,42 @@
 
             </div>
 
-            <div class="profile-card membership-card">
-                <h2 class="membership-title">Tu membresía</h2>
-                <p class="membership-status" id="membership-status">Cargando…</p>
-                <p class="form-error" id="membership-error" role="alert" hidden></p>
-                <div class="membership-actions">
-                    <a href="/FrontEnd/Premium.html" class="btn-gradient-sm" id="membership-cta">Ver planes</a>
-                    <button type="button" class="btn-outline" id="membership-cancel-btn" hidden>Cancelar suscripción</button>
+            <div class="profile-secondary-cards">
+                <div class="profile-card membership-card">
+                    <h2 class="membership-title">Tu membresía</h2>
+                    <p class="membership-status" id="membership-status">Cargando…</p>
+                    <p class="form-error" id="membership-error" role="alert" hidden></p>
+                    <div class="membership-actions">
+                        <a href="/FrontEnd/Premium.html" class="btn-gradient-sm" id="membership-cta">Ver planes</a>
+                        <button type="button" class="btn-outline" id="membership-cancel-btn" hidden>Cancelar suscripción</button>
+                    </div>
+                </div>
+
+                <div class="profile-card danger-zone">
+                    <h2 class="membership-title">Eliminar cuenta</h2>
+                    <p class="membership-status">Esta acción es permanente. Se borran tu perfil, favoritos, calificaciones y progreso de reproducción, y se cancela cualquier suscripción activa.</p>
+                    <p class="form-error" id="delete-account-error" role="alert" hidden></p>
+
+                    <button type="button" class="btn-outline btn-danger" id="delete-account-open-btn">Eliminar cuenta</button>
+
+                    <div class="delete-account-confirm" id="delete-account-confirm" hidden>
+                        <label class="delete-account-checkbox-row">
+                            <input type="checkbox" id="delete-account-checkbox">
+                            Entiendo que esta acción es permanente y no se puede deshacer.
+                        </label>
+
+                        <div class="field">
+                            <label for="delete-account-input">Escribe tu nombre de usuario (<strong id="delete-account-username-hint"></strong>) para confirmar</label>
+                            <div class="input-wrap">
+                                <input type="text" id="delete-account-input" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="membership-actions">
+                            <button type="button" class="btn-outline" id="delete-account-cancel-btn">Cancelar</button>
+                            <button type="button" class="btn-danger" id="delete-account-confirm-btn" disabled>Eliminar cuenta definitivamente</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

@@ -1816,9 +1816,33 @@ body:has(.site-header) {
 /* --- Página de perfil --- */
 
 .profile-section {
-    max-width: 480px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 24px 32px 100px;
+}
+
+.profile-info-card {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.profile-secondary-cards {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+    max-width: 900px;
+    margin: 24px auto 0;
+}
+
+.profile-secondary-cards .profile-card {
+    flex: 1;
+    margin: 0;
+}
+
+@media (max-width: 720px) {
+    .profile-secondary-cards {
+        flex-direction: column;
+    }
 }
 
 .profile-card {
@@ -4715,8 +4739,8 @@ body.has-fullscreen-player {
 /* --- Membresía (Mi perfil) --- */
 
 .membership-card {
-    max-width: 480px;
-    margin: 24px auto 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .membership-title {
@@ -4737,6 +4761,49 @@ body.has-fullscreen-player {
     justify-content: center;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+.danger-zone {
+    display: flex;
+    flex-direction: column;
+    border-color: rgba(248, 113, 113, 0.35);
+}
+
+.btn-danger {
+    border-color: rgba(248, 113, 113, 0.5);
+    color: #f87171;
+}
+
+.btn-danger:hover {
+    border-color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+}
+
+.btn-danger:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.delete-account-confirm {
+    margin-top: 20px;
+    text-align: left;
+    padding-top: 20px;
+    border-top: 1px solid var(--field-border);
+}
+
+.delete-account-checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    cursor: pointer;
+}
+
+.delete-account-checkbox-row input {
+    margin-top: 2px;
 }
 
 /* --- Premium (planes) --- */

@@ -53,6 +53,7 @@ if (!session) {
     renderAvatar(avatarUrl, currentUsername.charAt(0).toUpperCase());
 
     renderMembership();
+    setupDeleteAccount();
 
     avatarInput.addEventListener('change', async () => {
         const file = avatarInput.files[0];
@@ -202,5 +203,77 @@ if (!session) {
                 cancelBtn.textContent = 'Cancelar suscripción';
             }
         };
+    }
+
+    function setupDeleteAccount() {
+        const openBtn = document.querySelector('#delete-account-open-btn');
+        const confirmPanel = document.querySelector('#delete-account-confirm');
+        const checkbox = document.querySelector('#delete-account-checkbox');
+        const usernameHint = document.querySelector('#delete-account-username-hint');
+        const input = document.querySelector('#delete-account-input');
+        const cancelBtn = document.querySelector('#delete-account-cancel-btn');
+        const confirmBtn = document.querySelector('#delete-account-confirm-btn');
+        const deleteErrorEl = document.querySelector('#delete-account-error');
+
+        if (!openBtn) return;
+
+        usernameHint.textContent = currentUsername;
+
+        function resetPanel() {
+            confirmPanel.hidden = true;
+            openBtn.hidden = false;
+            checkbox.checked = false;
+            input.value = '';
+            deleteErrorEl.hidden = true;
+            confirmBtn.disabled = true;
+        }
+
+        function updateConfirmState() {
+            // Compara contra el username actual en el campo (no uno viejo en
+            // memoria), por si lo acaba de cambiar en el formulario de arriba.
+            confirmBtn.disabled = !(checkbox.checked && input.value.trim() === usernameInput.value.trim());
+        }
+
+        openBtn.addEventListener('click', () => {
+            openBtn.hidden = true;
+            confirmPanel.hidden = false;
+            usernameHint.textContent = usernameInput.value.trim();
+        });
+
+        cancelBtn.addEventListener('click', resetPanel);
+
+        checkbox.addEventListener('change', updateConfirmState);
+        input.addEventListener('input', updateConfirmState);
+
+        confirmBtn.addEventListener('click', async () => {
+            deleteErrorEl.hidden = true;
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Eliminando…';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/delete-account`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${session.access_token}` },
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    deleteErrorEl.textContent = data.error || 'No se pudo eliminar tu cuenta.';
+                    deleteErrorEl.hidden = false;
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = 'Eliminar cuenta definitivamente';
+                    return;
+                }
+
+                await supabase.auth.signOut();
+                window.location.href = '/index.html';
+            } catch (err) {
+                deleteErrorEl.textContent = 'No se pudo conectar con el servidor.';
+                deleteErrorEl.hidden = false;
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Eliminar cuenta definitivamente';
+            }
+        });
     }
 }
