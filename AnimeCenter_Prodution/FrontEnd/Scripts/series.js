@@ -75,6 +75,7 @@ async function loadSeriesByGenre() {
         .from('anime')
         .select('title, slug, description, type, cover_url, genre')
         .eq('type', 'series')
+        .eq('is_adult', false) // el +18 solo se lista en Adultos.html
         .order('created_at', { ascending: false });
 
     if (error) {

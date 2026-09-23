@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { ADULT_BUCKET } from './adult-gate.js';
 
 const gate = document.querySelector('#admin-gate');
 const panel = document.querySelector('#admin-panel');
@@ -115,6 +116,7 @@ function initAdminPanel() {
         form.season.value = anime.season || '';
         form.genre.value = anime.genre || '';
         form.is_featured.checked = anime.is_featured;
+        form.is_adult.checked = anime.is_adult;
         form.cover.value = '';
         formTitle.textContent = `Editando: ${anime.title}`;
         saveBtn.textContent = 'Guardar cambios';
@@ -167,7 +169,7 @@ function initAdminPanel() {
     }
 
     function rowHTML(anime, index) {
-        const cover = anime.cover_url
+        const cover = anime.cover_url && !anime.is_adult
             ? `<img src="${anime.cover_url}" alt="" class="catalog-table-thumb">`
             : `<div class="catalog-table-thumb--empty"></div>`;
 
@@ -179,7 +181,7 @@ function initAdminPanel() {
             <tr data-id="${anime.id}">
                 <td>${index}</td>
                 <td>${cover}</td>
-                <td class="catalog-title-cell" title="${anime.title}">${anime.title}</td>
+                <td class="catalog-title-cell" title="${anime.title}">${anime.title}${anime.is_adult ? ' · +18' : ''}</td>
                 <td>${TYPE_LABELS[anime.type] || anime.type}</td>
                 <td>${statusBadge}</td>
                 <td>${anime.release_year ?? '—'}</td>
@@ -287,6 +289,10 @@ function initAdminPanel() {
         }
 
         if (btn.dataset.action === 'star') {
+            if (anime.is_adult && !anime.is_featured) {
+                showError('El contenido +18 no se puede mostrar en Destacados.');
+                return;
+            }
             const newValue = !anime.is_featured;
             const { error } = await supabase.from('anime').update({ is_featured: newValue }).eq('id', id);
             if (error) {
@@ -366,16 +372,25 @@ function initAdminPanel() {
             season: form.season.value ? parseInt(form.season.value, 10) : null,
             genre: form.genre.value || null,
             is_featured: form.is_featured.checked,
+            is_adult: form.is_adult.checked,
         };
+
+        // El +18 no puede ir en Destacados (se muestran en la home).
+        if (payload.is_adult) payload.is_featured = false;
 
         if (coverFile) {
             const extension = coverFile.name.split('.').pop();
             const path = `${payload.slug}-${Date.now()}.${extension}`;
 
+            // Portadas +18 van al bucket privado y se guarda solo la ruta;
+            // se sirven con URL firmada (ver adult-gate.js).
+            const bucket = payload.is_adult ? ADULT_BUCKET : 'covers';
+            const storagePath = payload.is_adult ? `covers/${path}` : path;
+
             const { error: uploadError } = await supabase
                 .storage
-                .from('covers')
-                .upload(path, coverFile);
+                .from(bucket)
+                .upload(storagePath, coverFile);
 
             if (uploadError) {
                 saveBtn.disabled = false;
@@ -384,8 +399,9 @@ function initAdminPanel() {
                 return;
             }
 
-            const { data: publicUrlData } = supabase.storage.from('covers').getPublicUrl(path);
-            payload.cover_url = publicUrlData.publicUrl;
+            payload.cover_url = payload.is_adult
+                ? storagePath
+                : supabase.storage.from('covers').getPublicUrl(path).data.publicUrl;
         }
 
         const { error } = editingId
@@ -487,6 +503,7 @@ async function createEpisodeManager(options) {
     let animeList = [];
     let currentAnimeId = null;
     let currentAnimeSlug = null;
+    let currentAnimeIsAdult = false;
     let currentAnimeTitle = null;
     let editingEpisodeId = null;
     let episodes = [];
@@ -517,7 +534,7 @@ async function createEpisodeManager(options) {
     // --- Carga la lista de animes del tipo que le toca a esta barra ---
     const { data: animeData, error: animeListError } = await supabase
         .from('anime')
-        .select('id, slug, title, type')
+        .select('id, slug, title, type, is_adult')
         .order('title', { ascending: true });
 
     if (animeListError) {
@@ -535,8 +552,8 @@ async function createEpisodeManager(options) {
         }
 
         resultsEl.innerHTML = items.map((anime) => `
-            <button type="button" class="admin-combobox-item" data-id="${anime.id}" data-slug="${anime.slug}" data-title="${anime.title}">
-                ${anime.title}
+            <button type="button" class="admin-combobox-item" data-id="${anime.id}" data-slug="${anime.slug}" data-title="${anime.title}" data-adult="${anime.is_adult ? '1' : ''}">
+                ${anime.title}${anime.is_adult ? ' · +18' : ''}
             </button>
         `).join('');
         resultsEl.hidden = false;
@@ -545,6 +562,7 @@ async function createEpisodeManager(options) {
     function selectAnime(anime) {
         currentAnimeId = anime.id;
         currentAnimeSlug = anime.slug;
+        currentAnimeIsAdult = anime.isAdult;
         currentAnimeTitle = anime.title;
         searchInput.value = anime.title;
         resultsEl.hidden = true;
@@ -561,6 +579,7 @@ async function createEpisodeManager(options) {
         if (!query) {
             currentAnimeId = null;
             currentAnimeSlug = null;
+            currentAnimeIsAdult = false;
             currentAnimeTitle = null;
             managerEl.hidden = true;
             resultsEl.hidden = true;
@@ -585,6 +604,7 @@ async function createEpisodeManager(options) {
             id: item.dataset.id,
             slug: item.dataset.slug,
             title: item.dataset.title,
+            isAdult: item.dataset.adult === '1',
         });
     });
 
@@ -719,10 +739,15 @@ async function createEpisodeManager(options) {
             const prefix = isMovieMode ? 'movie' : 'ep';
             const path = `${currentAnimeSlug}/${prefix}-${episodeNumber}-${Date.now()}.${extension}`;
 
+            // Videos +18 van al bucket privado; se guarda la ruta y el
+            // reproductor la firma al momento de verlo.
+            const bucket = currentAnimeIsAdult ? ADULT_BUCKET : 'episodes';
+            const storagePath = currentAnimeIsAdult ? `videos/${path}` : path;
+
             const { error: uploadError } = await supabase
                 .storage
-                .from('episodes')
-                .upload(path, videoFile);
+                .from(bucket)
+                .upload(storagePath, videoFile);
 
             if (uploadError) {
                 episodeSaveBtn.disabled = false;
@@ -731,8 +756,9 @@ async function createEpisodeManager(options) {
                 return;
             }
 
-            const { data: publicUrlData } = supabase.storage.from('episodes').getPublicUrl(path);
-            payload.video_url = publicUrlData.publicUrl;
+            payload.video_url = currentAnimeIsAdult
+                ? storagePath
+                : supabase.storage.from('episodes').getPublicUrl(path).data.publicUrl;
         }
 
         const { error } = editingEpisodeId
@@ -804,9 +830,11 @@ async function initHomeMediaManager() {
     };
 
     // Trae todos los animes una sola vez, para el buscador del modal.
+    // El contenido +18 no se puede poner en la home (la ve cualquiera).
     const { data: animeOptions } = await supabase
         .from('anime')
         .select('id, title')
+        .eq('is_adult', false)
         .order('title', { ascending: true });
 
     const allAnime = animeOptions || [];

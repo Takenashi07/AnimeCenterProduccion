@@ -158,7 +158,7 @@ async function cargarGuardados() {
 
     const { data, error } = await supabase
         .from('watch_progress')
-        .select('status, current_episode, updated_at, anime:anime_id(id, slug, title, type, season, cover_url, total_episodes)')
+        .select('status, current_episode, updated_at, anime:anime_id(id, slug, title, type, season, cover_url, total_episodes, is_adult)')
         .eq('user_id', session.user.id)
         .order('updated_at', { ascending: false });
 
@@ -169,8 +169,9 @@ async function cargarGuardados() {
 
     // La portada que se muestra aquí es siempre la portada general del
     // anime (anime.cover_url), sin importar en qué capítulo vas.
+    // El contenido +18 no se muestra aquí (solo en Adultos.html).
     const guardados = (data || [])
-        .filter((row) => row.anime)
+        .filter((row) => row.anime && !row.anime.is_adult)
         .map((row) => ({
             id: row.anime.id,
             slug: row.anime.slug,
@@ -214,7 +215,7 @@ async function cargarFavoritos() {
 
     const { data, error } = await supabase
         .from('favorites')
-        .select('episode_id, created_at, episode:episode_id(episode_number, title), anime:anime_id(slug, title, cover_url)')
+        .select('episode_id, created_at, episode:episode_id(episode_number, title), anime:anime_id(slug, title, cover_url, is_adult)')
         .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
@@ -224,7 +225,7 @@ async function cargarFavoritos() {
     }
 
     const favoritos = (data || [])
-        .filter((row) => row.episode && row.anime)
+        .filter((row) => row.episode && row.anime && !row.anime.is_adult)
         .map((row) => ({
             id: row.episode_id,
             animeNombre: row.anime.title,

@@ -47,7 +47,7 @@ async function loadRanking() {
     // en el cliente es más simple que mantener una vista/RPC en Supabase.
     const { data, error } = await supabase
         .from('ratings')
-        .select('score, anime:anime_id(slug, title, genre, cover_url)');
+        .select('score, anime:anime_id(slug, title, genre, cover_url, is_adult)');
 
     if (error) {
         listEl.innerHTML = `<p class="catalog-empty">No se pudo cargar el ranking.</p>`;
@@ -57,7 +57,7 @@ async function loadRanking() {
     const byAnime = new Map();
 
     (data || []).forEach((row) => {
-        if (!row.anime) return;
+        if (!row.anime || row.anime.is_adult) return;
         const key = row.anime.slug;
         if (!byAnime.has(key)) {
             byAnime.set(key, { anime: row.anime, total: 0, count: 0 });

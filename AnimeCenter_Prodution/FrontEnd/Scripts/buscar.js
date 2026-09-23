@@ -95,7 +95,8 @@ async function runSearch() {
 
     let queryBuilder = supabase
         .from('anime')
-        .select('title, slug, description, type, cover_url');
+        .select('title, slug, description, type, cover_url')
+        .eq('is_adult', false); // el +18 solo se lista en Adultos.html
 
     // Cada palabra escrita debe aparecer en el título o la descripción
     // (no hace falta que estén juntas ni en el mismo orden).

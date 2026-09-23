@@ -1065,6 +1065,10 @@ body:has(.site-header) {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 280px));
     gap: 24px;
+    /* Las columnas miden máx. 280px y no llenan el contenedor: sin esto
+       quedan pegadas a la izquierda y todo (tarjetas y mensajes vacíos)
+       se ve corrido del centro. */
+    justify-content: center;
 }
 
 .anime-card-link {
@@ -4489,8 +4493,30 @@ body.has-fullscreen-player {
 /* Cuando el gate muestra el sticker, no necesita el padding grande
    que usa el mensaje de texto plano ("Cargando capítulo…"). */
 #player-gate:has(.login-gate),
-#player-gate:has(.episode-gate) {
+#player-gate:has(.episode-gate),
+#anime-gate:has(.login-gate),
+#adult-gate:has(.login-gate) {
     padding: 20px 32px;
+}
+
+/* Gates +18 (verificación de edad, plan, confirmación): no usan el
+   sticker de "Inicia sesión", así que el título sí se muestra. */
+.login-gate--plain {
+    gap: 20px;
+    padding-top: 24px;
+}
+
+.login-gate--plain .login-gate-text h2 {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0 0 10px;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--text-main);
 }
 
 /* --- Gate de "episodio no disponible" (mismo patrón que .login-gate,
@@ -4908,4 +4934,34 @@ body.has-fullscreen-player {
     .premium-plans {
         grid-template-columns: 1fr;
     }
+}
+/* --- Verificación de edad (sección +18) --- */
+
+.age-gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.age-gate-form label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.age-gate-form input[type="date"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    color: inherit;
+    font: inherit;
+    color-scheme: dark;
+}
+
+.age-gate-form input[type="date"]:focus {
+    outline: none;
+    border-color: var(--field-border-focus);
 }

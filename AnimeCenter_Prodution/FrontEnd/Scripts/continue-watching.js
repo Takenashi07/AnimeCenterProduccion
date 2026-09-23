@@ -76,7 +76,8 @@ async function loadContinueWatching() {
     const { data: animes, error: animeError } = await supabase
         .from('anime')
         .select('id, slug, title, cover_url')
-        .in('id', animeIds);
+        .in('id', animeIds)
+        .eq('is_adult', false); // el +18 no se muestra en la home
 
     if (animeError || !animes) {
         console.error('[continue-watching] Error al consultar anime:', animeError);

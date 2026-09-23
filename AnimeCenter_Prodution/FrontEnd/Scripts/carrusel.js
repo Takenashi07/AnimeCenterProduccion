@@ -11,7 +11,7 @@ const SLIDE_MS = 5000; // tiempo entre transiciones automáticas
 async function fetchSlots() {
     return supabase
         .from('home_carousel_slots')
-        .select('position, image_url, anime:anime_id(slug, title, description, type)')
+        .select('position, image_url, anime:anime_id(slug, title, description, type, is_adult)')
         .order('position', { ascending: true });
 }
 
@@ -25,7 +25,8 @@ async function initCarousel() {
         return;
     }
 
-    const slides = (data || []).filter((row) => row.image_url);
+    // El +18 nunca se muestra en la home (Admin.html tampoco deja elegirlo).
+    const slides = (data || []).filter((row) => row.image_url && !row.anime?.is_adult);
 
     if (slides.length === 0) {
         sectionEl.hidden = true;

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { requireAdultConfirmation, resolveAdultMediaUrl } from './adult-gate.js';
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('slug');
@@ -38,9 +39,18 @@ async function init() {
         .eq('slug', slug)
         .single();
 
+    // Si es +18 y el usuario no tiene acceso, RLS ni siquiera devuelve la
+    // fila, así que cae en "No se encontró". Si sí la devuelve, además se
+    // pide la confirmación de mayoría de edad de esta sesión.
     if (animeError || !anime) {
         gate.textContent = 'No se encontró ese anime.';
         return;
+    }
+
+    if (anime.is_adult) {
+        await requireAdultConfirmation(gate);
+        gate.textContent = 'Cargando anime…';
+        anime.cover_url = await resolveAdultMediaUrl(anime.cover_url);
     }
 
     const { data: episodes, error: episodesError } = await supabase

@@ -151,6 +151,7 @@ async function loadCatalog() {
     const { data, error } = await supabase
         .from('anime')
         .select('title, slug, description, type, cover_url, is_featured')
+        .eq('is_adult', false) // el +18 solo se lista en Adultos.html
         .order('created_at', { ascending: false });
 
     if (error) {

@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient.js';
 import { getActiveTier, tierMeets } from './entitlements.js';
+import { requireAdultConfirmation, resolveAdultMediaUrl } from './adult-gate.js';
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('slug');
@@ -69,9 +70,16 @@ async function init() {
         .eq('slug', slug)
         .single();
 
+    // Contenido +18: RLS solo devuelve la fila a quien tenga
+    // has_adult_access(); aquí además se pide la confirmación de sesión.
     if (animeError || !anime) {
         gate.textContent = 'No se encontró ese anime.';
         return;
+    }
+
+    if (anime.is_adult) {
+        await requireAdultConfirmation(gate);
+        gate.textContent = 'Cargando capítulo…';
     }
 
     const { data: episode, error: episodeError } = await supabase
@@ -101,7 +109,11 @@ async function init() {
         : `Capítulo ${episode.episode_number}`;
     descriptionEl.textContent = anime.description || '';
 
-    video.src = episode.video_url;
+    // Los videos +18 están en un bucket privado: video_url guarda la ruta
+    // y se convierte en una URL firmada que caduca.
+    video.src = anime.is_adult
+        ? await resolveAdultMediaUrl(episode.video_url)
+        : episode.video_url;
 
     setupEpisodeNav(anime.slug, episodeNumber, allEpisodes?.map((e) => e.episode_number) || []);
     setupPlayerControls();

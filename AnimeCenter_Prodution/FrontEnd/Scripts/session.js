@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { hasAdultAccess } from './adult-gate.js';
 
 async function renderNav() {
     const loginLink = document.querySelector('#nav-login');
@@ -6,6 +7,7 @@ async function renderNav() {
     const profileMenu = document.querySelector('#profile-menu');
     const heroCta = document.querySelector('#hero-cta');
     const adminItem = document.querySelector('#nav-admin-item');
+    const adultItem = document.querySelector('#nav-adult-item');
 
     // Esta página no tiene navbar (por ejemplo Login/Register) — no hacer nada.
     if (!loginLink || !registerLink || !profileMenu) return;
@@ -45,12 +47,20 @@ async function renderNav() {
 
             adminItem.hidden = !profile?.is_admin;
         }
+
+        // El link "+18" solo aparece si la base de datos confirma el acceso
+        // (plan adulto + 18 años registrados, o admin). A nadie más se le
+        // anuncia que la sección existe.
+        if (adultItem) {
+            adultItem.hidden = !(await hasAdultAccess());
+        }
     } else {
         loginLink.hidden = false;
         registerLink.hidden = false;
         profileMenu.hidden = true;
         if (heroCta) heroCta.hidden = false;
         if (adminItem) adminItem.hidden = true;
+        if (adultItem) adultItem.hidden = true;
     }
 }
 

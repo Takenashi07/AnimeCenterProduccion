@@ -71,7 +71,7 @@ async function loadSection({ key, rowsSelector, showBadge }) {
 
     const { data, error } = await supabase
         .from('home_section_slots')
-        .select('position, image_url, anime:anime_id(slug, title, description, type)')
+        .select('position, image_url, anime:anime_id(slug, title, description, type, is_adult)')
         .eq('section', key)
         .order('position', { ascending: true });
 
@@ -81,7 +81,7 @@ async function loadSection({ key, rowsSelector, showBadge }) {
         return;
     }
 
-    const slots = (data || []).filter((row) => row.image_url && row.anime);
+    const slots = (data || []).filter((row) => row.image_url && row.anime && !row.anime.is_adult);
 
     if (slots.length === 0) {
         sectionEl.hidden = true;

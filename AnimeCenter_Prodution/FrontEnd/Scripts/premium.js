@@ -1,4 +1,5 @@
 import { supabase, SUPABASE_URL } from './supabaseClient.js';
+import { getBirthDate, ageFromBirthDate } from './adult-gate.js';
 
 const errorBox = document.querySelector('#form-error');
 const planButtons = document.querySelectorAll('.premium-plan-btn');
@@ -21,6 +22,29 @@ planButtons.forEach((button) => {
         }
 
         const tier = button.dataset.tier;
+
+        // El plan adulto solo se vende a cuentas con 18+ años registrados.
+        // (Aunque alguien se lo saltara, has_adult_access() en la base de
+        // datos tampoco le daría acceso sin esa fecha.)
+        if (tier === 'adult') {
+            const birthDate = await getBirthDate(session.user.id);
+
+            if (birthDate === undefined) {
+                showError('No se pudo verificar tu edad. Intenta de nuevo.');
+                return;
+            }
+
+            if (!birthDate) {
+                // Adultos.html pide la fecha y luego regresa a los planes.
+                window.location.href = '/FrontEnd/Adultos.html';
+                return;
+            }
+
+            if (ageFromBirthDate(birthDate) < 18) {
+                showError('El plan con contenido adulto solo está disponible para mayores de 18 años.');
+                return;
+            }
+        }
         const originalText = button.textContent;
         button.disabled = true;
         button.textContent = 'Un momento…';
