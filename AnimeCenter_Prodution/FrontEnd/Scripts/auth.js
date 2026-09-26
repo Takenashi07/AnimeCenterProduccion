@@ -15,6 +15,24 @@ function setLoading(button, isLoading, idleText) {
     button.textContent = isLoading ? 'Un momento…' : idleText;
 }
 
+// Solo acepta rutas internas del sitio ("/FrontEnd/..."). Cualquier otra
+// cosa (otro dominio, "//sitio.com", "javascript:...") manda al Home, para
+// que un link manipulado no pueda sacar al usuario del sitio ni ejecutar
+// código con su sesión recién iniciada.
+function safeRedirectPath(value) {
+    if (!value) return '/index.html';
+
+    try {
+        const url = new URL(value, window.location.origin);
+        if (url.origin !== window.location.origin || !value.startsWith('/')) {
+            return '/index.html';
+        }
+        return url.pathname + url.search + url.hash;
+    } catch {
+        return '/index.html';
+    }
+}
+
 // ---------- LOGIN ----------
 
 const loginForm = document.querySelector('#login-form');
@@ -37,15 +55,20 @@ if (loginForm) {
         setLoading(submitBtn, false, 'Iniciar sesión');
 
         if (error) {
-            showError(errorBox, 'Correo o contraseña incorrectos.');
+            showError(
+                errorBox,
+                error.message.includes('Email not confirmed')
+                    ? 'Primero confirma tu correo: te enviamos un enlace al registrarte.'
+                    : 'Correo o contraseña incorrectos.'
+            );
             return;
         }
 
         // Si venías de una página protegida (ej. un capítulo), te regresa ahí.
         // Si no, te manda al Home como antes.
+        // URLSearchParams ya decodifica el valor.
         const params = new URLSearchParams(window.location.search);
-        const redirectTo = params.get('redirect');
-        window.location.href = redirectTo ? decodeURIComponent(redirectTo) : '/index.html';
+        window.location.href = safeRedirectPath(params.get('redirect'));
     });
 }
 
@@ -73,10 +96,14 @@ if (registerForm) {
 
         setLoading(submitBtn, true, 'Crear cuenta');
 
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
-            options: { data: { username } }
+            options: {
+                data: { username },
+                // A dónde regresa el enlace de confirmación del correo.
+                emailRedirectTo: `${window.location.origin}/FrontEnd/Login.html`,
+            }
         });
 
         setLoading(submitBtn, false, 'Crear cuenta');
@@ -90,6 +117,22 @@ if (registerForm) {
                 ? 'La contraseña debe tener al menos 8 caracteres.'
                 : error.message;
             showError(errorBox, message);
+            return;
+        }
+
+        // Con "Confirm email" activado en Supabase no hay sesión hasta que
+        // la persona abra el enlace del correo: se le avisa en vez de
+        // mandarla a un login que todavía no le va a funcionar.
+        if (!data.session) {
+            const successBox = document.querySelector('#form-success');
+            const text = 'Te enviamos un correo para confirmar tu cuenta. Abre el enlace y luego inicia sesión.';
+            if (successBox) {
+                successBox.textContent = text;
+                successBox.hidden = false;
+            } else {
+                showError(errorBox, text);
+            }
+            registerForm.reset();
             return;
         }
 

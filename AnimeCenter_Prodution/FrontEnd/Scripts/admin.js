@@ -144,7 +144,10 @@ function initAdminPanel() {
         const year = filterYearEl.value;
         const sort = filterSortEl.value;
 
-        let result = allAnime.filter((a) => a.type === currentTab);
+        // La pestaña +18 junta todos los tipos; las demás ya no muestran +18.
+        let result = currentTab === 'adult'
+            ? allAnime.filter((a) => a.is_adult)
+            : allAnime.filter((a) => a.type === currentTab && !a.is_adult);
 
         if (query) result = result.filter((a) => a.title.toLowerCase().includes(query));
         if (status) result = result.filter((a) => a.status === status);
@@ -181,7 +184,7 @@ function initAdminPanel() {
             <tr data-id="${anime.id}">
                 <td>${index}</td>
                 <td>${cover}</td>
-                <td class="catalog-title-cell" title="${anime.title}">${anime.title}${anime.is_adult ? ' · +18' : ''}</td>
+                <td class="catalog-title-cell" title="${anime.title}">${anime.title}</td>
                 <td>${TYPE_LABELS[anime.type] || anime.type}</td>
                 <td>${statusBadge}</td>
                 <td>${anime.release_year ?? '—'}</td>
@@ -194,9 +197,9 @@ function initAdminPanel() {
                         <button type="button" class="catalog-icon-btn catalog-icon-btn--delete" data-action="delete" title="Borrar">
                             <i class='bx bx-trash'></i>
                         </button>
-                        <button type="button" class="catalog-icon-btn catalog-icon-btn--star${anime.is_featured ? ' is-featured' : ''}" data-action="star" title="${anime.is_featured ? 'Quitar de Destacados' : 'Marcar como Destacado'}">
+                        ${anime.is_adult ? '' : `<button type="button" class="catalog-icon-btn catalog-icon-btn--star${anime.is_featured ? ' is-featured' : ''}" data-action="star" title="${anime.is_featured ? 'Quitar de Destacados' : 'Marcar como Destacado'}">
                             <i class='bx ${anime.is_featured ? 'bxs-star' : 'bx-star'}'></i>
-                        </button>
+                        </button>`}
                     </div>
                 </td>
             </tr>
@@ -339,6 +342,8 @@ function initAdminPanel() {
     catalogAddBtn.addEventListener('click', () => {
         resetForm();
         hideMessages();
+        // Desde la pestaña +18 el anime nuevo ya viene marcado como +18.
+        form.is_adult.checked = currentTab === 'adult';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
@@ -429,16 +434,27 @@ function initAdminPanel() {
 }
 
 // ============================================================
-// Episodios y Películas
+// Episodios, Películas y Contenido +18
 // ============================================================
-// Ambas barras (Episodios / Películas) usan la misma lógica de fondo
-// (misma tabla "episodes"), solo cambia qué animes aparecen en el
-// buscador y algunos textos/campos del formulario. Por eso están
-// generadas desde la misma función genérica en vez de estar
-// duplicadas.
+// Las tres barras (Episodios / Películas / Contenido +18) usan la
+// misma lógica de fondo (misma tabla "episodes"), solo cambia qué
+// animes aparecen en el buscador y algunos textos/campos del
+// formulario. Por eso están generadas desde la misma función genérica
+// en vez de estar duplicadas.
+
+const EPISODE_LABELS = {
+    addLabel: 'Agregar capítulo',
+    emptyMessage: 'Este anime todavía no tiene capítulos.',
+};
+
+const MOVIE_LABELS = {
+    addLabel: 'Subir película',
+    emptyMessage: 'Todavía no has subido el video de esta película.',
+};
 
 function initEpisodeManagers() {
-    // Barra de Episodios: series, OVAs y especiales (todo menos películas).
+    // Barra de Episodios: series, OVAs y especiales (todo menos películas
+    // y +18, que tienen su propia barra).
     createEpisodeManager({
         searchInputSel: '#episode-anime-search',
         resultsSel: '#episode-anime-results',
@@ -451,14 +467,12 @@ function initEpisodeManagers() {
         successSel: '#episode-form-success',
         listSel: '#episode-list',
         sectionSel: '.admin-episodes-section',
-        typeFilter: (type) => type !== 'movie',
-        isMovieMode: false,
-        addLabel: 'Agregar capítulo',
-        emptyMessage: 'Este anime todavía no tiene capítulos.',
+        animeFilter: (anime) => anime.type !== 'movie' && !anime.is_adult,
+        movieMode: 'never',
     });
 
-    // Barra de Películas: solo animes con type = "movie". El número de
-    // capítulo se oculta y siempre se guarda como 1.
+    // Barra de Películas: solo animes con type = "movie" (sin +18). El
+    // número de capítulo se oculta y siempre se guarda como 1.
     createEpisodeManager({
         searchInputSel: '#movie-anime-search',
         resultsSel: '#movie-anime-results',
@@ -471,10 +485,28 @@ function initEpisodeManagers() {
         successSel: '#movie-form-success',
         listSel: '#movie-list',
         sectionSel: '.admin-movies-section',
-        typeFilter: (type) => type === 'movie',
-        isMovieMode: true,
-        addLabel: 'Subir película',
-        emptyMessage: 'Todavía no has subido el video de esta película.',
+        animeFilter: (anime) => anime.type === 'movie' && !anime.is_adult,
+        movieMode: 'always',
+    });
+
+    // Barra +18: todos los tipos, solo títulos +18. Se comporta como la de
+    // Episodios o la de Películas según el tipo del título elegido, y sus
+    // videos se suben al bucket privado.
+    createEpisodeManager({
+        searchInputSel: '#adult-anime-search',
+        resultsSel: '#adult-anime-results',
+        managerSel: '#adult-manager',
+        formSel: '#adult-form',
+        formTitleSel: '#adult-form-title',
+        cancelBtnSel: '#adult-cancel-btn',
+        saveBtnSel: '#adult-save-btn',
+        errorSel: '#adult-form-error',
+        successSel: '#adult-form-success',
+        listSel: '#adult-list',
+        sectionSel: '.admin-adult-section',
+        numberFieldSel: '#adult-number-field',
+        animeFilter: (anime) => anime.is_adult,
+        movieMode: 'byType',
     });
 }
 
@@ -482,8 +514,12 @@ async function createEpisodeManager(options) {
     const {
         searchInputSel, resultsSel, managerSel, formSel, formTitleSel,
         cancelBtnSel, saveBtnSel, errorSel, successSel, listSel, sectionSel,
-        typeFilter, isMovieMode, addLabel, emptyMessage,
+        numberFieldSel, animeFilter, movieMode,
     } = options;
+
+    // 'always' / 'never' fijan el modo; 'byType' lo decide el título elegido.
+    let isMovieMode = movieMode === 'always';
+    const labels = () => (isMovieMode ? MOVIE_LABELS : EPISODE_LABELS);
 
     const searchInput = document.querySelector(searchInputSel);
     const resultsEl = document.querySelector(resultsSel);
@@ -495,6 +531,7 @@ async function createEpisodeManager(options) {
     const episodeErrorBox = document.querySelector(errorSel);
     const episodeSuccessBox = document.querySelector(successSel);
     const episodeListEl = document.querySelector(listSel);
+    const numberFieldEl = numberFieldSel ? document.querySelector(numberFieldSel) : null;
 
     if (!searchInput || !managerEl || !episodeForm) return;
 
@@ -526,8 +563,8 @@ async function createEpisodeManager(options) {
             episodeForm.episode_number.value = '1';
         }
         editingEpisodeId = null;
-        episodeFormTitle.textContent = addLabel;
-        episodeSaveBtn.textContent = addLabel;
+        episodeFormTitle.textContent = labels().addLabel;
+        episodeSaveBtn.textContent = labels().addLabel;
         episodeCancelBtn.hidden = true;
     }
 
@@ -540,7 +577,7 @@ async function createEpisodeManager(options) {
     if (animeListError) {
         showEpisodeError('No se pudo cargar la lista de animes: ' + animeListError.message);
     }
-    animeList = (animeData || []).filter((a) => typeFilter(a.type));
+    animeList = (animeData || []).filter(animeFilter);
 
     // --- Buscador tipo autocompletar ---
 
@@ -552,8 +589,8 @@ async function createEpisodeManager(options) {
         }
 
         resultsEl.innerHTML = items.map((anime) => `
-            <button type="button" class="admin-combobox-item" data-id="${anime.id}" data-slug="${anime.slug}" data-title="${anime.title}" data-adult="${anime.is_adult ? '1' : ''}">
-                ${anime.title}${anime.is_adult ? ' · +18' : ''}
+            <button type="button" class="admin-combobox-item" data-id="${anime.id}" data-slug="${anime.slug}" data-title="${anime.title}" data-type="${anime.type}" data-adult="${anime.is_adult ? '1' : ''}">
+                ${anime.title}${movieMode === 'byType' && anime.type === 'movie' ? ' · Película' : ''}
             </button>
         `).join('');
         resultsEl.hidden = false;
@@ -566,6 +603,13 @@ async function createEpisodeManager(options) {
         currentAnimeTitle = anime.title;
         searchInput.value = anime.title;
         resultsEl.hidden = true;
+
+        // En la barra +18 una película no lleva número de capítulo.
+        if (movieMode === 'byType') {
+            isMovieMode = anime.type === 'movie';
+            if (numberFieldEl) numberFieldEl.hidden = isMovieMode;
+            episodeForm.episode_number.required = !isMovieMode;
+        }
 
         resetEpisodeForm();
         managerEl.hidden = false;
@@ -604,6 +648,7 @@ async function createEpisodeManager(options) {
             id: item.dataset.id,
             slug: item.dataset.slug,
             title: item.dataset.title,
+            type: item.dataset.type,
             isAdult: item.dataset.adult === '1',
         });
     });
@@ -652,7 +697,7 @@ async function createEpisodeManager(options) {
         episodes = data;
         episodeListEl.innerHTML = data.length
             ? data.map(episodeRowHTML).join('')
-            : `<p class="catalog-empty">${emptyMessage}</p>`;
+            : `<p class="catalog-empty">${labels().emptyMessage}</p>`;
     }
 
     episodeListEl.addEventListener('click', async (event) => {
@@ -739,8 +784,7 @@ async function createEpisodeManager(options) {
             const prefix = isMovieMode ? 'movie' : 'ep';
             const path = `${currentAnimeSlug}/${prefix}-${episodeNumber}-${Date.now()}.${extension}`;
 
-            // Videos +18 van al bucket privado; se guarda la ruta y el
-            // reproductor la firma al momento de verlo.
+            // Videos +18 van a su propio bucket privado.
             const bucket = currentAnimeIsAdult ? ADULT_BUCKET : 'episodes';
             const storagePath = currentAnimeIsAdult ? `videos/${path}` : path;
 
@@ -751,14 +795,14 @@ async function createEpisodeManager(options) {
 
             if (uploadError) {
                 episodeSaveBtn.disabled = false;
-                episodeSaveBtn.textContent = editingEpisodeId ? 'Guardar cambios' : addLabel;
+                episodeSaveBtn.textContent = editingEpisodeId ? 'Guardar cambios' : labels().addLabel;
                 showEpisodeError('No se pudo subir el video: ' + uploadError.message);
                 return;
             }
 
-            payload.video_url = currentAnimeIsAdult
-                ? storagePath
-                : supabase.storage.from('episodes').getPublicUrl(path).data.publicUrl;
+            // Se guarda solo la ruta: los dos buckets son privados y el
+            // reproductor firma la URL al momento de verlo.
+            payload.video_url = storagePath;
         }
 
         const { error } = editingEpisodeId
@@ -766,7 +810,7 @@ async function createEpisodeManager(options) {
             : await supabase.from('episodes').insert(payload);
 
         episodeSaveBtn.disabled = false;
-        episodeSaveBtn.textContent = editingEpisodeId ? 'Guardar cambios' : addLabel;
+        episodeSaveBtn.textContent = editingEpisodeId ? 'Guardar cambios' : labels().addLabel;
 
         if (error) {
             showEpisodeError(

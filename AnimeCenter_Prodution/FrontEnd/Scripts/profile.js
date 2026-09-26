@@ -11,6 +11,7 @@ const errorBox = document.querySelector('#form-error');
 const successBox = document.querySelector('#form-success');
 
 const MAX_AVATAR_BYTES = 4 * 1024 * 1024; // 4 MB
+const AVATAR_TYPES = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' };
 
 function showError(message) {
     successBox.hidden = true;
@@ -30,8 +31,12 @@ function hideMessages() {
 }
 
 function renderAvatar(avatarUrl, fallbackInitial) {
+    // Se arma con DOM (no innerHTML) para que avatar_url no pueda inyectar HTML.
     if (avatarUrl) {
-        avatarEl.innerHTML = `<img src="${avatarUrl}" alt="Tu foto de perfil">`;
+        const img = document.createElement('img');
+        img.src = avatarUrl;
+        img.alt = 'Tu foto de perfil';
+        avatarEl.replaceChildren(img);
     } else {
         avatarEl.textContent = fallbackInitial;
     }
@@ -61,13 +66,21 @@ if (!session) {
 
         hideMessages();
 
-        if (file.size > MAX_AVATAR_BYTES) {
-            showError('La imagen pesa demasiado (máximo 2 MB).');
+        // Solo imágenes, y la extensión sale del tipo real del archivo
+        // (no del nombre, que el usuario puede cambiar a .html, .svg, etc.).
+        const extension = AVATAR_TYPES[file.type];
+        if (!extension) {
+            showError('Solo se permiten imágenes JPG, PNG o WEBP.');
             avatarInput.value = '';
             return;
         }
 
-        const extension = file.name.split('.').pop();
+        if (file.size > MAX_AVATAR_BYTES) {
+            showError('La imagen pesa demasiado (máximo 4 MB).');
+            avatarInput.value = '';
+            return;
+        }
+
         const path = `${user.id}/avatar.${extension}`;
 
         const { error: uploadError } = await supabase

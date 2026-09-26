@@ -31,8 +31,13 @@ async function renderNav() {
         const avatarEl = document.querySelector('#profile-avatar');
         const avatarUrl = session.user.user_metadata?.avatar_url;
 
+        // Se arma con DOM (no innerHTML): avatar_url lo puede editar el
+        // propio usuario en sus metadatos y no debe poder inyectar HTML.
         if (avatarUrl) {
-            avatarEl.innerHTML = `<img src="${avatarUrl}" alt="Tu foto de perfil">`;
+            const img = document.createElement('img');
+            img.src = avatarUrl;
+            img.alt = 'Tu foto de perfil';
+            avatarEl.replaceChildren(img);
         } else {
             avatarEl.textContent = username.charAt(0).toUpperCase();
         }

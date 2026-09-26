@@ -2,6 +2,38 @@ import { supabase } from './supabaseClient.js';
 import { getActiveTier, tierMeets } from './entitlements.js';
 import { requireAdultConfirmation, resolveAdultMediaUrl } from './adult-gate.js';
 
+// Los capítulos normales viven en el bucket "episodes". Se reproducen con
+// una URL firmada que caduca: el bucket es privado y solo firma a quien
+// tenga plan (política de storage en la base de datos), así nadie puede
+// descargar los videos sin pagar copiando la URL.
+const EPISODES_BUCKET = 'episodes';
+const EPISODES_PUBLIC_PREFIX = `/storage/v1/object/public/${EPISODES_BUCKET}/`;
+const SIGNED_URL_SECONDS = 60 * 60 * 4;
+
+async function resolveEpisodeVideoUrl(videoUrl) {
+    if (!videoUrl) return null;
+
+    // Los capítulos viejos guardaban la URL pública completa: se saca la ruta.
+    const prefixIndex = videoUrl.indexOf(EPISODES_PUBLIC_PREFIX);
+    const path = prefixIndex >= 0
+        ? decodeURIComponent(videoUrl.slice(prefixIndex + EPISODES_PUBLIC_PREFIX.length))
+        : videoUrl;
+
+    // URL de otro servidor (no es del bucket): se usa tal cual.
+    if (/^https?:\/\//.test(path)) return path;
+
+    const { data, error } = await supabase
+        .storage
+        .from(EPISODES_BUCKET)
+        .createSignedUrl(path, SIGNED_URL_SECONDS);
+
+    // Si todavía no se aplicó el SQL de seguridad (bucket público sin
+    // política de lectura), se usa la URL pública para no romper el video.
+    // Con el bucket ya privado esa URL no sirve, así que no abre nada.
+    if (error) return supabase.storage.from(EPISODES_BUCKET).getPublicUrl(path).data.publicUrl;
+    return data.signedUrl;
+}
+
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('slug');
 const episodeNumber = parseInt(params.get('ep') || '1', 10);
@@ -113,7 +145,7 @@ async function init() {
     // y se convierte en una URL firmada que caduca.
     video.src = anime.is_adult
         ? await resolveAdultMediaUrl(episode.video_url)
-        : episode.video_url;
+        : await resolveEpisodeVideoUrl(episode.video_url);
 
     setupEpisodeNav(anime.slug, episodeNumber, allEpisodes?.map((e) => e.episode_number) || []);
     setupPlayerControls();

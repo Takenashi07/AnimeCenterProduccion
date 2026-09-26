@@ -3214,14 +3214,16 @@ body.has-fullscreen-player {
 /* --- Sección de episodios en admin --- */
 
 .admin-episodes-section,
-.admin-movies-section {
+.admin-movies-section,
+.admin-adult-section {
     max-width: 900px;
     margin: 0 auto;
     padding: 0 32px 40px;
 }
 
 .admin-episodes-section h2,
-.admin-movies-section h2 {
+.admin-movies-section h2,
+.admin-adult-section h2 {
     font-family: var(--font-display);
     font-size: 20px;
     font-weight: 700;
@@ -3229,7 +3231,8 @@ body.has-fullscreen-player {
 }
 
 .admin-episodes-section .field,
-.admin-movies-section .field {
+.admin-movies-section .field,
+.admin-adult-section .field {
     margin-bottom: 24px;
 }
 
@@ -3256,8 +3259,9 @@ body.has-fullscreen-player {
     margin-bottom: 8px;
 }
 
-/* Separador visual entre la barra de Episodios y la de Películas */
-.admin-movies-section {
+/* Separador visual entre las barras de Episodios, Películas y +18 */
+.admin-movies-section,
+.admin-adult-section {
     border-top: 1px solid var(--field-border);
     padding-top: 40px;
 }

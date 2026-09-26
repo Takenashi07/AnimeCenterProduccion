@@ -131,7 +131,8 @@
     .favorites-section,
     .feedback-section,
     .search-empty,
-    .admin-episodes-section {
+    .admin-episodes-section,
+    .admin-adult-section {
         padding-left: 24px;
         padding-right: 24px;
     }
@@ -372,7 +373,8 @@
     .search-empty,
     .saved-toolbar,
     .view-toggle,
-    .admin-episodes-section {
+    .admin-episodes-section,
+    .admin-adult-section {
         padding-left: 18px;
         padding-right: 18px;
     }

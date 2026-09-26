@@ -281,7 +281,7 @@
                                         <span class="checkbox-box"></span>
                                         Contenido para adultos (+18)
                                     </label>
-                                    <p class="field-hint">Solo lo verán cuentas con el plan adulto y 18+ años, y únicamente en la sección +18. Su portada y videos se guardan en un bucket privado: si marcas un anime que ya existía, vuelve a subir su portada y sus capítulos.</p>
+                                    <p class="field-hint">Solo lo verán cuentas con el plan adulto y 18+ años, y únicamente en la sección +18. Sus capítulos se suben en "Contenido +18" (más abajo). Su portada y videos se guardan en un bucket privado: si marcas un anime que ya existía, vuelve a subir su portada y sus capítulos.</p>
                                 </div>
 
                             </div>
@@ -493,6 +493,75 @@
                 </div>
             </section>
 
+            <section class="admin-adult-section">
+                <h2>Contenido +18</h2>
+                <p class="field-hint" style="margin-top: -8px; margin-bottom: 16px;">Capítulos y películas de los títulos marcados como +18. Los videos se guardan en el bucket privado.</p>
+
+                <div class="admin-form-card admin-episode-select-card">
+                    <div class="field">
+                        <label for="adult-anime-search">Selecciona un título +18</label>
+                        <div class="input-wrap">
+                            <svg class="input-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <circle cx="11" cy="11" r="7"/>
+                                <path d="M21 21l-4.35-4.35"/>
+                            </svg>
+                            <input type="text" id="adult-anime-search" placeholder="Escribe para buscar un título +18…" autocomplete="off">
+                        </div>
+                        <div id="adult-anime-results" class="admin-combobox-results" hidden></div>
+                        <p class="field-hint">Solo aparecen títulos marcados como "Contenido para adultos (+18)" en el catálogo.</p>
+                    </div>
+                </div>
+
+                <div id="adult-manager" class="admin-episode-manager" hidden>
+
+                    <p class="form-error" id="adult-form-error" role="alert" hidden></p>
+                    <p class="form-success" id="adult-form-success" role="status" hidden></p>
+
+                    <form id="adult-form" class="admin-form-card">
+                        <h3 id="adult-form-title">Agregar capítulo</h3>
+
+                        <div class="admin-form-grid">
+                            <div class="field" id="adult-number-field">
+                                <label for="adult-number">Número de capítulo</label>
+                                <div class="input-wrap input-wrap--number">
+                                    <input type="number" id="adult-number" name="episode_number" min="1" required>
+                                    <div class="number-spin">
+                                        <button type="button" class="number-spin-btn number-spin-btn--up" tabindex="-1" aria-label="Aumentar">
+                                            <svg viewBox="0 0 10 6" width="8" height="5" aria-hidden="true"><path d="M1 5l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                        <button type="button" class="number-spin-btn number-spin-btn--down" tabindex="-1" aria-label="Disminuir">
+                                            <svg viewBox="0 0 10 6" width="8" height="5" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="adult-title">Título (opcional)</label>
+                                <div class="input-wrap">
+                                    <input type="text" id="adult-title" name="title" maxlength="150">
+                                </div>
+                            </div>
+
+                            <div class="field field--full">
+                                <label for="adult-video">Archivo de video (mp4)</label>
+                                <div class="input-wrap">
+                                    <input type="file" id="adult-video" name="video" accept="video/mp4,video/webm">
+                                </div>
+                                <p class="field-hint">Puede tardar según el tamaño. Déjalo vacío al editar si no quieres cambiar el video.</p>
+                            </div>
+                        </div>
+
+                        <div class="admin-form-actions">
+                            <button type="button" id="adult-cancel-btn" class="btn-outline" hidden>Cancelar edición</button>
+                            <button type="submit" class="btn-submit" id="adult-save-btn">Agregar capítulo</button>
+                        </div>
+                    </form>
+
+                    <div id="adult-list" class="admin-episode-list"></div>
+                </div>
+            </section>
+
             <section class="admin-list-section">
                 <div class="catalog-card">
                     <div class="catalog-card-inner">
@@ -512,6 +581,7 @@
                             <button type="button" class="catalog-tab" data-type="movie">Películas</button>
                             <button type="button" class="catalog-tab" data-type="ova">OVAs</button>
                             <button type="button" class="catalog-tab" data-type="special">Especiales</button>
+                            <button type="button" class="catalog-tab" data-type="adult">+18</button>
                         </div>
 
                         <div class="catalog-filters">

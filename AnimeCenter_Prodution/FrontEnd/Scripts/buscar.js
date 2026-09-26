@@ -38,8 +38,20 @@ function saveRecentSearch(term) {
     }
 }
 
+// Escapa texto antes de meterlo en HTML. Las búsquedas recientes vienen
+// de la URL (?q=...), así que un link manipulado podía guardar HTML con
+// código en localStorage y ejecutarlo la siguiente vez que abrieras Buscar.
+function escapeHTML(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function searchChipHTML(term) {
-    return `<a href="/FrontEnd/Buscar.html?q=${encodeURIComponent(term)}" class="search-chip">${term}</a>`;
+    return `<a href="/FrontEnd/Buscar.html?q=${encodeURIComponent(term)}" class="search-chip">${escapeHTML(term)}</a>`;
 }
 
 // Términos sugeridos fijos, para cuando alguien llega sin haber
@@ -66,18 +78,18 @@ function renderEmptyState() {
 function cardHTML(anime) {
     const tag = anime.type === 'movie' ? 'Película' : 'Serie';
     const thumb = anime.cover_url
-        ? `<img class="card-thumb" src="${anime.cover_url}" alt="Portada de ${anime.title}" loading="lazy"
+        ? `<img class="card-thumb" src="${escapeHTML(anime.cover_url)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy"
                 onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'card-thumb card-thumb--empty'}));">`
         : `<div class="card-thumb card-thumb--empty"></div>`;
 
     return `
-        <a class="anime-card-link" href="/FrontEnd/Anime.html?slug=${anime.slug}">
+        <a class="anime-card-link" href="/FrontEnd/Anime.html?slug=${encodeURIComponent(anime.slug)}">
             <article class="anime-card">
                 ${thumb}
                 <div class="card-body">
                     <span class="card-tag">${tag}</span>
-                    <h3>${anime.title}</h3>
-                    <p>${anime.description ?? ''}</p>
+                    <h3>${escapeHTML(anime.title)}</h3>
+                    <p>${escapeHTML(anime.description)}</p>
                 </div>
             </article>
         </a>
@@ -100,7 +112,12 @@ async function runSearch() {
 
     // Cada palabra escrita debe aparecer en el título o la descripción
     // (no hace falta que estén juntas ni en el mismo orden).
-    const words = query.split(/\s+/).filter(Boolean);
+    // Se quitan los caracteres que usa la sintaxis de filtros de Supabase
+    // (coma, paréntesis, comodines) para que el texto no pueda alterar el filtro.
+    const words = query
+        .split(/\s+/)
+        .map((word) => word.replace(/[,()*%\\"]/g, ''))
+        .filter(Boolean);
     words.forEach((word) => {
         queryBuilder = queryBuilder.or(`title.ilike.%${word}%,description.ilike.%${word}%`);
     });
