@@ -9,6 +9,28 @@ function showError(message) {
     errorBox.hidden = false;
 }
 
+// Los admins ya tienen acceso completo sin costo: los botones de pago se
+// desactivan (la Edge Function además rechaza cobrarles).
+async function disablePlansForAdmin() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single();
+
+    if (!profile?.is_admin) return;
+
+    planButtons.forEach((button) => {
+        button.disabled = true;
+        button.textContent = 'Incluido (admin)';
+    });
+}
+
+disablePlansForAdmin();
+
 planButtons.forEach((button) => {
     button.addEventListener('click', async () => {
         errorBox.hidden = true;
