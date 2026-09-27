@@ -49,7 +49,7 @@ async function initCarousel() {
                     <h2 class="slide-title">${escapeHTML(anime.title)}</h2>
                     ${anime.description ? `<p class="slide-desc">${escapeHTML(anime.description)}</p>` : ''}
                     <div class="slide-actions">
-                        ${anime.slug ? `<a href="Anime.html?slug=${encodeURIComponent(anime.slug)}" class="slide-btn slide-btn--primary">▶ Ver ahora</a>` : ''}
+                        ${anime.slug ? `<a href="/FrontEnd/Anime.html?slug=${encodeURIComponent(anime.slug)}" class="slide-btn slide-btn--primary">▶ Ver ahora</a>` : ''}
                     </div>
                 </div>
             `
