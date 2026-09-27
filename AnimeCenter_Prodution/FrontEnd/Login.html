@@ -117,23 +117,6 @@
     </div>
 
     <script type="module" src="/FrontEnd/Scripts/auth.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.querySelector('#toggle-password-btn');
-            const passwordInput = document.querySelector('#password');
-            const eyeIcon = document.querySelector('#eye-icon');
-            const eyeOffIcon = document.querySelector('#eye-off-icon');
-
-            if (toggleBtn && passwordInput) {
-                toggleBtn.addEventListener('click', () => {
-                    const isHidden = passwordInput.type === 'password';
-                    passwordInput.type = isHidden ? 'text' : 'password';
-                    toggleBtn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
-                    eyeIcon.hidden = isHidden;
-                    eyeOffIcon.hidden = !isHidden;
-                });
-            }
-        });
-    </script>
+    <script type="module" src="/FrontEnd/Scripts/password-toggle.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import './img-fallback.js';
 import { requireAdultConfirmation, resolveAdultMediaUrl } from './adult-gate.js';
 import { escapeHTML } from './html.js';
 
@@ -88,7 +89,7 @@ function renderHeader(anime) {
 
     if (anime.cover_url) {
         coverWrap.innerHTML = `<img src="${escapeHTML(anime.cover_url)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy"
-            onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'card-thumb card-thumb--empty'}));">`;
+            data-fallback="card-thumb card-thumb--empty">`;
     } else {
         coverEmpty.hidden = false;
     }

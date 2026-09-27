@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import './img-fallback.js';
 import { escapeHTML } from './html.js';
 
 const GENRE_LABELS = {
@@ -14,7 +15,7 @@ const TOP_N = 4;
 function itemHTML(anime, average, index) {
     const thumb = anime.cover_url
         ? `<img class="ranking-thumb" src="${escapeHTML(anime.cover_url)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy"
-                onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'ranking-thumb'}));">`
+                data-fallback="ranking-thumb">`
         : `<div class="ranking-thumb"></div>`;
 
     const position = index + 1;

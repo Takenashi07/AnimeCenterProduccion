@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import './img-fallback.js';
 import { escapeHTML } from './html.js';
 import {
     hasAdultAccess,
@@ -81,7 +82,7 @@ function cardHTML(anime, coverUrl) {
 
     const thumb = coverUrl
         ? `<img class="card-thumb" src="${escapeHTML(coverUrl)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy"
-                onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'card-thumb card-thumb--empty'}));">`
+                data-fallback="card-thumb card-thumb--empty">`
         : `<div class="card-thumb card-thumb--empty"></div>`;
 
     return `

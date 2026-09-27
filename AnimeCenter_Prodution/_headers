@@ -6,9 +6,15 @@
 # - nosniff: el navegador no "adivina" el tipo de archivo.
 # - Referrer-Policy: no manda la URL completa (con ?slug=...) a otros sitios.
 # - Permissions-Policy: el sitio no usa cámara, micrófono ni ubicación.
+# - Content-Security-Policy-Report-Only: MODO PRUEBA de la lista de lugares
+#   de donde la página puede cargar código, estilos, imágenes y videos, y a
+#   quién puede mandar datos. No bloquea nada todavía: solo avisa en la
+#   consola del navegador lo que habría bloqueado. Cuando no haya avisos,
+#   se pasa esa lista a la línea Content-Security-Policy de arriba.
 
 /*
   Content-Security-Policy: frame-ancestors 'none'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://unpkg.com; img-src 'self' data: blob: https://mmqftphezdhjogkjrosg.supabase.co; media-src 'self' https://mmqftphezdhjogkjrosg.supabase.co; connect-src 'self' https://mmqftphezdhjogkjrosg.supabase.co wss://mmqftphezdhjogkjrosg.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

@@ -156,7 +156,7 @@
         <section class="creator-section creator-section--linked">
             <div class="creator-card">
                 <img class="creator-photo" src="/Assets/Imgs/dev-espinosa.jpg" alt="Foto de Dev. Espinosa"
-                     onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'creator-avatar', textContent: 'DE'}));">
+                     data-fallback="creator-avatar" data-fallback-text="DE">
                 <div class="creator-info">
                     <h3>Dev. Espinosa</h3>
                     <p class="creator-role">Creador de Anime Center</p>
@@ -176,7 +176,7 @@
         <section class="creator-section creator-section--linked">
             <div class="creator-card">
                 <img class="creator-photo" src="/Assets/Imgs/team-seguridad.jpg" alt="Foto de [Nombre]"
-                     onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'creator-avatar', textContent: 'XX'}));">
+                     data-fallback="creator-avatar" data-fallback-text="XX">
                 <div class="creator-info">
                     <h3>[Nombre]</h3>
                     <p class="creator-role">Experto en seguridad</p>
@@ -209,7 +209,7 @@
 
                 <div class="creator-card creator-card--admin">
                     <img class="creator-photo" src="/Assets/Imgs/team-admin1.jpg" alt="Foto de [Nombre]"
-                         onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'creator-avatar', textContent: 'XX'}));">
+                         data-fallback="creator-avatar" data-fallback-text="XX">
                     <div class="creator-info">
                         <h3>[Nombre]</h3>
                         <p class="creator-role">Administrador</p>
@@ -224,7 +224,7 @@
 
                 <div class="creator-card creator-card--admin">
                     <img class="creator-photo" src="/Assets/Imgs/team-admin2.jpg" alt="Foto de [Nombre]"
-                         onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'creator-avatar', textContent: 'XX'}));">
+                         data-fallback="creator-avatar" data-fallback-text="XX">
                     <div class="creator-info">
                         <h3>[Nombre]</h3>
                         <p class="creator-role">Administrador</p>
@@ -290,6 +290,7 @@
     </footer>
 
     <script type="module" src="/FrontEnd/Scripts/session.js"></script>
+    <script type="module" src="/FrontEnd/Scripts/img-fallback.js"></script>
     <script type="module" src="/FrontEnd/Scripts/nav-toggle.js"></script>
     <script type="module" src="/FrontEnd/Scripts/feedback.js"></script>
 </body>

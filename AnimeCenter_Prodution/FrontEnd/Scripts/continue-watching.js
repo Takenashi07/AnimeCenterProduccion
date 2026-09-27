@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import './img-fallback.js';
 import { escapeHTML } from './html.js';
 
 const gridEl = document.querySelector('#continue-watching-grid');
@@ -120,7 +121,7 @@ async function loadContinueWatching() {
 
             const thumb = anime.cover_url
                 ? `<img src="${escapeHTML(anime.cover_url)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;"
-                        onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'progress-card-thumb', style: 'background: var(--field-bg);'}));">`
+                        data-fallback="progress-card-thumb" data-fallback-style="background: var(--field-bg);">`
                 : `<div style="width: 100%; height: 100%; background: var(--field-bg);"></div>`;
 
             return `
