@@ -99,15 +99,30 @@ async function initCarousel() {
         updateDots();
     }
 
+    // Antes de avanzar se revisa si está parado en una copia de la orilla y,
+    // si es así, primero se coloca en la imagen real. Así nunca se sale de
+    // la tira aunque no llegue el aviso de "animación terminada" (clics
+    // rápidos o pestaña en segundo plano), que antes lo dejaba en negro.
     function next() {
+        if (currentIndex >= totalSlots - 1) {
+            goTo(1, { animate: false });
+            trackEl.offsetWidth; // obliga al navegador a aplicar el salto ya
+        }
         goTo(currentIndex + 1);
     }
 
     function prev() {
+        if (currentIndex <= 0) {
+            goTo(N, { animate: false });
+            trackEl.offsetWidth;
+        }
         goTo(currentIndex - 1);
     }
 
-    trackEl.addEventListener('transitionend', () => {
+    trackEl.addEventListener('transitionend', (event) => {
+        // Solo cuenta la animación de la propia tira, no la de algo adentro.
+        if (event.target !== trackEl) return;
+
         if (currentIndex === totalSlots - 1) {
             // Estamos en el clon del primero: saltamos al original real.
             goTo(1, { animate: false });
@@ -147,6 +162,13 @@ async function initCarousel() {
 
     sectionEl.addEventListener('mouseenter', stopAutoplay);
     sectionEl.addEventListener('mouseleave', startAutoplay);
+
+    // Con la pestaña oculta el navegador pausa las animaciones pero el
+    // temporizador seguiría avanzando: se pausa y se reanuda al volver.
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopAutoplay();
+        else startAutoplay();
+    });
 
     const hasControls = N > 1;
     if (prevBtn) prevBtn.hidden = !hasControls;
