@@ -13,7 +13,9 @@ document.querySelectorAll('.toggle-password').forEach((toggleBtn) => {
         const isHidden = input.type === 'password';
         input.type = isHidden ? 'text' : 'password';
         toggleBtn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
-        eyeIcon.hidden = isHidden;
-        eyeOffIcon.hidden = !isHidden;
+        // Los íconos son <svg>: en ellos la propiedad .hidden no existe, hay
+        // que poner/quitar el atributo directamente.
+        eyeIcon.toggleAttribute('hidden', isHidden);
+        eyeOffIcon.toggleAttribute('hidden', !isHidden);
     });
 });
