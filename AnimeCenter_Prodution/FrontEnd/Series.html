@@ -92,7 +92,7 @@
             <a href="#seinen">Seinen</a>
             <a href="#josei">Josei</a>
             <a href="#kodomo">Kodomo</a>
-            <a href="#sin-clasificar">Sin clasificar</a>
+            <a href="#sin-clasificar" id="sin-clasificar-link" hidden>Sin clasificar</a>
         </nav>
 
         <section class="catalog" id="shonen">
@@ -140,7 +140,8 @@
             </div>
         </section>
 
-        <section class="catalog" id="sin-clasificar">
+        <!-- Solo para admins: series.js la muestra si la cuenta es admin. -->
+        <section class="catalog" id="sin-clasificar" hidden>
             <div class="section-heading">
                 <h2>Sin clasificar</h2>
                 <p>Series a las que todavía no les has asignado una demografía.</p>

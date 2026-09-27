@@ -72,6 +72,19 @@ function renderRows(containerEl, items, emptyMessage, groupSize) {
     });
 }
 
+async function isAdmin() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return false;
+
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single();
+
+    return profile?.is_admin === true;
+}
+
 async function loadSeriesByGenre() {
     const { data, error } = await supabase
         .from('anime')
@@ -96,10 +109,14 @@ async function loadSeriesByGenre() {
         renderRows(container, items, 'Todavía no hay series clasificadas aquí.', 4);
     });
 
+    // "Sin clasificar" es una herramienta para los admins (les dice qué
+    // series falta clasificar): al público no se le muestra.
     const unclassifiedContainer = document.querySelector('#sin-clasificar-rows');
-    if (unclassifiedContainer) {
+    if (unclassifiedContainer && await isAdmin()) {
         const unclassified = data.filter((a) => !a.genre);
         renderRows(unclassifiedContainer, unclassified, '¡Todo clasificado!', 4);
+        document.querySelector('#sin-clasificar').hidden = false;
+        document.querySelector('#sin-clasificar-link').hidden = false;
     }
 }
 
