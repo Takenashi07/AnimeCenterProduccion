@@ -1,16 +1,29 @@
 import { supabase } from './supabaseClient.js';
 import { escapeHTML } from './html.js';
 
-// Secciones de la home que el admin arma manualmente desde "Imágenes para
-// Secciones" (Admin.html), eligiendo un anime + una imagen para cada slot.
-// Antes, esos datos se guardaban en Supabase pero nada en la página los
-// leía — esto es lo que los conecta con lo que ve el usuario.
+// Secciones de la home. Estrenos y Recomendados las arma el admin a mano
+// desde "Imágenes para Secciones" (Admin.html), eligiendo un anime + una
+// imagen para cada slot. Tendencias es automática: los animes que más
+// usuarios vieron en el mes (función trending_this_month en Supabase), y se
+// renueva sola cada mes.
 
 const SECTIONS = [
     { key: 'estrenos', rowsSelector: '#estrenos-rows', showBadge: false },
-    { key: 'tendencias', rowsSelector: '#tendencias-rows', showBadge: true },
+    { key: 'tendencias', rowsSelector: '#tendencias-rows', showBadge: true, automatic: true },
     { key: 'recomendados', rowsSelector: '#recomendados-rows', showBadge: false },
 ];
+
+// Tendencias del mes, con la misma forma que un slot manual
+// ({ image_url, anime }) para reutilizar cardHTML. Usa la portada del anime.
+async function loadTrendingSlots() {
+    const { data, error } = await supabase.rpc('trending_this_month', { max_items: 10 });
+    if (error) return { data: null, error };
+
+    return {
+        data: (data || []).map((anime) => ({ image_url: anime.cover_url, anime })),
+        error: null,
+    };
+}
 
 function cardHTML(slot, index, showBadge) {
     const anime = slot.anime || {};
@@ -65,16 +78,18 @@ function wireRowScroll(trackEl, prevBtn, nextBtn) {
     requestAnimationFrame(updateArrows);
 }
 
-async function loadSection({ key, rowsSelector, showBadge }) {
+async function loadSection({ key, rowsSelector, showBadge, automatic }) {
     const sectionEl = document.querySelector(rowsSelector)?.closest('section');
     const rowsEl = document.querySelector(rowsSelector);
     if (!sectionEl || !rowsEl) return;
 
-    const { data, error } = await supabase
-        .from('home_section_slots')
-        .select('position, image_url, anime:anime_id(slug, title, description, type, is_adult)')
-        .eq('section', key)
-        .order('position', { ascending: true });
+    const { data, error } = automatic
+        ? await loadTrendingSlots()
+        : await supabase
+            .from('home_section_slots')
+            .select('position, image_url, anime:anime_id(slug, title, description, type, is_adult)')
+            .eq('section', key)
+            .order('position', { ascending: true });
 
     if (error) {
         console.error(`[home-sections] Error al consultar "${key}":`, error);

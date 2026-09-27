@@ -865,13 +865,7 @@ async function initHomeMediaManager() {
             slotsEl: document.querySelector('#recomendados-slots'),
             countEl: document.querySelector('#recomendados-count'),
         },
-        tendencias: {
-            table: 'home_section_slots',
-            section: 'tendencias',
-            layout: 'grid',
-            slotsEl: document.querySelector('#tendencias-slots'),
-            countEl: document.querySelector('#tendencias-count'),
-        },
+        // Tendencias ya no se arma aquí: es automática (lo más visto del mes).
     };
 
     // Trae todos los animes una sola vez, para el buscador del modal.
