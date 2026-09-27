@@ -1467,6 +1467,10 @@ body:has(.site-header) {
     min-width: 0;
     gap: 24px;
     overflow-x: auto;
+    /* .card-grid centra las tarjetas; si no caben, "center" a secas las
+       saca también por la izquierda, donde el scroll no llega (la primera
+       tarjeta quedaba cortada). "safe" centra solo cuando sí caben. */
+    justify-content: safe center;
     scroll-behavior: smooth;
     scroll-snap-type: x proximity;
     padding-bottom: 10px;
