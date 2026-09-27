@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { escapeHTML } from './html.js';
 
 const GENRE_LABELS = {
     shonen: 'Shōnen',
@@ -12,7 +13,7 @@ const TOP_N = 4;
 
 function itemHTML(anime, average, index) {
     const thumb = anime.cover_url
-        ? `<img class="ranking-thumb" src="${anime.cover_url}" alt="Portada de ${anime.title}" loading="lazy"
+        ? `<img class="ranking-thumb" src="${escapeHTML(anime.cover_url)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy"
                 onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'ranking-thumb'}));">`
         : `<div class="ranking-thumb"></div>`;
 
@@ -21,11 +22,11 @@ function itemHTML(anime, average, index) {
     const genreLabel = GENRE_LABELS[anime.genre] || 'Sin clasificar';
 
     return `
-        <a href="/FrontEnd/Anime.html?slug=${anime.slug}" class="ranking-item">
+        <a href="/FrontEnd/Anime.html?slug=${encodeURIComponent(anime.slug)}" class="ranking-item">
             <span class="ranking-position${positionClass}">${position}</span>
             ${thumb}
             <div class="ranking-info">
-                <h3>${anime.title}</h3>
+                <h3>${escapeHTML(anime.title)}</h3>
                 <span class="ranking-genre">${genreLabel}</span>
             </div>
             <div class="ranking-score">

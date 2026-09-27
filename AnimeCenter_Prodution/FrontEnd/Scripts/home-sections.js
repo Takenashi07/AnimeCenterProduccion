@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { escapeHTML } from './html.js';
 
 // Secciones de la home que el admin arma manualmente desde "Imágenes para
 // Secciones" (Admin.html), eligiendo un anime + una imagen para cada slot.
@@ -21,20 +22,20 @@ function cardHTML(slot, index, showBadge) {
     const thumb = showBadge
         ? `
             <div class="card-thumb-wrap">
-                <img class="card-thumb" src="${slot.image_url}" alt="" loading="lazy">
+                <img class="card-thumb" src="${escapeHTML(slot.image_url)}" alt="" loading="lazy">
                 ${badge}
             </div>
         `
-        : `<img class="card-thumb" src="${slot.image_url}" alt="" loading="lazy">`;
+        : `<img class="card-thumb" src="${escapeHTML(slot.image_url)}" alt="" loading="lazy">`;
 
     return `
-        <a href="/FrontEnd/Anime.html?slug=${anime.slug}" class="anime-card-link">
+        <a href="/FrontEnd/Anime.html?slug=${encodeURIComponent(anime.slug)}" class="anime-card-link">
             <article class="anime-card">
                 ${thumb}
                 <div class="card-body">
                     <span class="card-tag">${tag}</span>
-                    <h3>${anime.title || ''}</h3>
-                    <p>${anime.description ?? ''}</p>
+                    <h3>${escapeHTML(anime.title)}</h3>
+                    <p>${escapeHTML(anime.description)}</p>
                 </div>
             </article>
         </a>

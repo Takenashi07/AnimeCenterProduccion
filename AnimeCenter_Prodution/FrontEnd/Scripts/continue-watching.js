@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { escapeHTML } from './html.js';
 
 const gridEl = document.querySelector('#continue-watching-grid');
 const prevBtn = document.querySelector('#continue-watching-prev');
@@ -118,12 +119,12 @@ async function loadContinueWatching() {
                 : 0;
 
             const thumb = anime.cover_url
-                ? `<img src="${anime.cover_url}" alt="Portada de ${anime.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;"
+                ? `<img src="${escapeHTML(anime.cover_url)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;"
                         onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'progress-card-thumb', style: 'background: var(--field-bg);'}));">`
                 : `<div style="width: 100%; height: 100%; background: var(--field-bg);"></div>`;
 
             return `
-                <a href="/FrontEnd/Capitulo.html?slug=${anime.slug}&ep=${progress.current_episode}" class="progress-card">
+                <a href="/FrontEnd/Capitulo.html?slug=${encodeURIComponent(anime.slug)}&ep=${progress.current_episode}" class="progress-card">
                     <div class="progress-card-thumb">
                         ${thumb}
                         <div class="progress-card-play">
@@ -133,7 +134,7 @@ async function loadContinueWatching() {
                         </div>
                     </div>
                     <div class="progress-card-body">
-                        <h3>${anime.title}</h3>
+                        <h3>${escapeHTML(anime.title)}</h3>
                         <p class="progress-card-episode">Episodio ${progress.current_episode} de ${totalEpisodes}</p>
                         <div class="progress-card-track">
                             <div class="progress-card-fill" style="width: ${progressPercent}%;"></div>

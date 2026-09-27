@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { escapeHTML } from './html.js';
 
 const GENRES = ['shonen', 'shojo', 'seinen', 'josei', 'kodomo'];
 
@@ -6,18 +7,18 @@ function cardHTML(anime) {
     const tag = anime.type === 'movie' ? 'Película' : 'Serie';
 
     const thumb = anime.cover_url
-        ? `<img class="card-thumb" src="${anime.cover_url}" alt="Portada de ${anime.title}" loading="lazy"
+        ? `<img class="card-thumb" src="${escapeHTML(anime.cover_url)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy"
                 onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'card-thumb card-thumb--empty'}));">`
         : `<div class="card-thumb card-thumb--empty"></div>`;
 
     return `
-        <a class="anime-card-link" href="/FrontEnd/Anime.html?slug=${anime.slug}">
+        <a class="anime-card-link" href="/FrontEnd/Anime.html?slug=${encodeURIComponent(anime.slug)}">
             <article class="anime-card">
                 ${thumb}
                 <div class="card-body">
                     <span class="card-tag">${tag}</span>
-                    <h3>${anime.title}</h3>
-                    <p>${anime.description ?? ''}</p>
+                    <h3>${escapeHTML(anime.title)}</h3>
+                    <p>${escapeHTML(anime.description)}</p>
                 </div>
             </article>
         </a>

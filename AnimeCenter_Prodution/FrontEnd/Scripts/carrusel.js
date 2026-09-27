@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { escapeHTML } from './html.js';
 
 const sectionEl = document.querySelector('#home-carousel-section');
 const trackEl = document.querySelector('#home-carousel-track');
@@ -37,7 +38,7 @@ async function initCarousel() {
 
     function slideHTML(slide) {
         const anime = slide.anime || {};
-        const img = `<img src="${slide.image_url}" alt="${anime.title || ''}">`;
+        const img = `<img src="${escapeHTML(slide.image_url)}" alt="${escapeHTML(anime.title)}">`;
         const hasInfo = Boolean(anime.title);
 
         const info = hasInfo
@@ -45,10 +46,10 @@ async function initCarousel() {
                 <div class="slide-overlay"></div>
                 <div class="slide-info">
                     <span class="slide-badge">${anime.type === 'movie' ? 'Película' : 'Serie'}</span>
-                    <h2 class="slide-title">${anime.title}</h2>
-                    ${anime.description ? `<p class="slide-desc">${anime.description}</p>` : ''}
+                    <h2 class="slide-title">${escapeHTML(anime.title)}</h2>
+                    ${anime.description ? `<p class="slide-desc">${escapeHTML(anime.description)}</p>` : ''}
                     <div class="slide-actions">
-                        ${anime.slug ? `<a href="Anime.html?slug=${anime.slug}" class="slide-btn slide-btn--primary">▶ Ver ahora</a>` : ''}
+                        ${anime.slug ? `<a href="Anime.html?slug=${encodeURIComponent(anime.slug)}" class="slide-btn slide-btn--primary">▶ Ver ahora</a>` : ''}
                     </div>
                 </div>
             `

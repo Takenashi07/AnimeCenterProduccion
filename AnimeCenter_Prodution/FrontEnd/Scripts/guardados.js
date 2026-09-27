@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { escapeHTML } from './html.js';
 
 // ============================================================
 // Guardados.js — Mis Guardados / Mis Favoritos
@@ -234,7 +235,7 @@ async function cargarFavoritos() {
             imagen: row.anime.cover_url,
             // Favoritos son "me gusta" de un capítulo puntual: siguen
             // apuntando directo a ese capítulo, no a la ficha del anime.
-            url: `Capitulo.html?slug=${row.anime.slug}&ep=${row.episode.episode_number}`,
+            url: `Capitulo.html?slug=${encodeURIComponent(row.anime.slug)}&ep=${row.episode.episode_number}`,
         }));
 
     grid.innerHTML = favoritos.length
@@ -332,17 +333,17 @@ function crearTarjetaGuardado(anime) {
 
     // La tarjeta de Guardados lleva a la ficha del anime (donde se ve
     // la lista completa de capítulos), no directo al capítulo 1.
-    const animeUrl = anime.slug ? `/FrontEnd/Anime.html?slug=${anime.slug}` : '#';
+    const animeUrl = anime.slug ? `/FrontEnd/Anime.html?slug=${encodeURIComponent(anime.slug)}` : '#';
 
     return `
         <article class="saved-card" data-id="${anime.id}" data-type="${anime.tipo}" data-guardado-en="${anime.guardadoEn ?? 0}">
-            <a class="saved-card-thumb" href="${animeUrl}" aria-label="Ir a ${anime.nombre}">
-                <img src="${anime.imagen}" alt="${anime.nombre}">
+            <a class="saved-card-thumb" href="${animeUrl}" aria-label="Ir a ${escapeHTML(anime.nombre)}">
+                <img src="${escapeHTML(anime.imagen)}" alt="${escapeHTML(anime.nombre)}">
             </a>
             <button type="button" class="saved-card-remove" aria-label="Quitar de guardados" data-id="${anime.id}">×</button>
             <div class="saved-card-body">
                 <a href="${animeUrl}" class="saved-card-link">
-                    <h3>${anime.nombre}</h3>
+                    <h3>${escapeHTML(anime.nombre)}</h3>
                 </a>
                 ${subInfo}
                 ${footer}
@@ -354,8 +355,8 @@ function crearTarjetaGuardado(anime) {
 function crearTarjetaFavorito(capitulo) {
     return `
         <article class="favorite-card" data-id="${capitulo.id}">
-            <a class="favorite-card-thumb" href="${capitulo.url}">
-                <img src="${capitulo.imagen}" alt="${capitulo.animeNombre}">
+            <a class="favorite-card-thumb" href="${escapeHTML(capitulo.url)}">
+                <img src="${escapeHTML(capitulo.imagen)}" alt="${escapeHTML(capitulo.animeNombre)}">
                 <span class="favorite-card-badge">EP ${capitulo.numero}</span>
                 <span class="favorite-card-play" aria-hidden="true">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
@@ -365,8 +366,8 @@ function crearTarjetaFavorito(capitulo) {
             </a>
             <div class="favorite-card-body">
                 <div class="favorite-card-info">
-                    <p class="favorite-card-anime">${capitulo.animeNombre}</p>
-                    <h3 class="favorite-card-title">${capitulo.capituloNombre ?? `Episodio ${capitulo.numero}`}</h3>
+                    <p class="favorite-card-anime">${escapeHTML(capitulo.animeNombre)}</p>
+                    <h3 class="favorite-card-title">${capitulo.capituloNombre ? escapeHTML(capitulo.capituloNombre) : `Episodio ${capitulo.numero}`}</h3>
                 </div>
                 <button type="button" class="favorite-card-like" aria-label="Quitar de favoritos" data-id="${capitulo.id}">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">

@@ -1,0 +1,15 @@
+# Headers de seguridad para Netlify (este archivo va en la carpeta que se publica).
+#
+# - frame-ancestors / X-Frame-Options: ninguna otra página puede meter el sitio
+#   en un iframe (evita que te engañen para dar clic en "Eliminar cuenta",
+#   "Cancelar suscripción", etc. en una página falsa encima).
+# - nosniff: el navegador no "adivina" el tipo de archivo.
+# - Referrer-Policy: no manda la URL completa (con ?slug=...) a otros sitios.
+# - Permissions-Policy: el sitio no usa cámara, micrófono ni ubicación.
+
+/*
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

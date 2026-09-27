@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient.js';
 import { ADULT_BUCKET } from './adult-gate.js';
+import { escapeHTML } from './html.js';
 
 const gate = document.querySelector('#admin-gate');
 const panel = document.querySelector('#admin-panel');
@@ -173,19 +174,19 @@ function initAdminPanel() {
 
     function rowHTML(anime, index) {
         const cover = anime.cover_url && !anime.is_adult
-            ? `<img src="${anime.cover_url}" alt="" class="catalog-table-thumb">`
+            ? `<img src="${escapeHTML(anime.cover_url)}" alt="" class="catalog-table-thumb">`
             : `<div class="catalog-table-thumb--empty"></div>`;
 
         const statusBadge = anime.status
-            ? `<span class="catalog-badge ${STATUS_BADGE_CLASS[anime.status] || ''}">${STATUS_LABELS[anime.status] || anime.status}</span>`
+            ? `<span class="catalog-badge ${STATUS_BADGE_CLASS[anime.status] || ''}">${STATUS_LABELS[anime.status] || escapeHTML(anime.status)}</span>`
             : '—';
 
         return `
             <tr data-id="${anime.id}">
                 <td>${index}</td>
                 <td>${cover}</td>
-                <td class="catalog-title-cell" title="${anime.title}">${anime.title}</td>
-                <td>${TYPE_LABELS[anime.type] || anime.type}</td>
+                <td class="catalog-title-cell" title="${escapeHTML(anime.title)}">${escapeHTML(anime.title)}</td>
+                <td>${TYPE_LABELS[anime.type] || escapeHTML(anime.type)}</td>
                 <td>${statusBadge}</td>
                 <td>${anime.release_year ?? '—'}</td>
                 <td>${episodiosCellText(anime)}</td>
@@ -256,7 +257,7 @@ function initAdminPanel() {
             .order('created_at', { ascending: false });
 
         if (error) {
-            catalogTableBody.innerHTML = `<tr class="catalog-empty-row"><td colspan="8">Error cargando el catálogo: ${error.message}</td></tr>`;
+            catalogTableBody.innerHTML = `<tr class="catalog-empty-row"><td colspan="8">Error cargando el catálogo: ${escapeHTML(error.message)}</td></tr>`;
             return;
         }
 
@@ -589,8 +590,8 @@ async function createEpisodeManager(options) {
         }
 
         resultsEl.innerHTML = items.map((anime) => `
-            <button type="button" class="admin-combobox-item" data-id="${anime.id}" data-slug="${anime.slug}" data-title="${anime.title}" data-type="${anime.type}" data-adult="${anime.is_adult ? '1' : ''}">
-                ${anime.title}${movieMode === 'byType' && anime.type === 'movie' ? ' · Película' : ''}
+            <button type="button" class="admin-combobox-item" data-id="${anime.id}" data-slug="${escapeHTML(anime.slug)}" data-title="${escapeHTML(anime.title)}" data-type="${escapeHTML(anime.type)}" data-adult="${anime.is_adult ? '1' : ''}">
+                ${escapeHTML(anime.title)}${movieMode === 'byType' && anime.type === 'movie' ? ' · Película' : ''}
             </button>
         `).join('');
         resultsEl.hidden = false;
@@ -669,7 +670,7 @@ async function createEpisodeManager(options) {
         return `
             <div class="admin-row" data-id="${ep.id}">
                 <div class="admin-row-info">
-                    <strong>${label}</strong>
+                    <strong>${escapeHTML(label)}</strong>
                     <span>${ep.video_url ? 'Video cargado' : 'Sin video'}</span>
                 </div>
                 <div class="admin-row-actions">
@@ -690,7 +691,7 @@ async function createEpisodeManager(options) {
             .order('episode_number', { ascending: true });
 
         if (error) {
-            episodeListEl.innerHTML = `<p class="catalog-empty">Error: ${error.message}</p>`;
+            episodeListEl.innerHTML = `<p class="catalog-empty">Error: ${escapeHTML(error.message)}</p>`;
             return;
         }
 
@@ -909,7 +910,7 @@ async function initHomeMediaManager() {
 
         resultsEl.innerHTML = matches.map((anime) => `
             <div class="media-picker-option${anime.id === pendingSelectedAnimeId ? ' is-selected' : ''}" data-id="${anime.id}">
-                ${anime.title}
+                ${escapeHTML(anime.title)}
             </div>
         `).join('');
     }
@@ -928,7 +929,7 @@ async function initHomeMediaManager() {
         if (file) {
             previewEl.innerHTML = `<img src="${URL.createObjectURL(file)}" alt="">`;
         } else if (existingRow?.image_url) {
-            previewEl.innerHTML = `<img src="${existingRow.image_url}" alt="">`;
+            previewEl.innerHTML = `<img src="${escapeHTML(existingRow.image_url)}" alt="">`;
         } else {
             previewEl.innerHTML = '';
         }
@@ -1015,7 +1016,7 @@ async function initHomeMediaManager() {
     // --- Render de cada grupo ---
 
     function slotThumbHTML(row) {
-        if (row?.image_url) return `<img src="${row.image_url}" alt="">`;
+        if (row?.image_url) return `<img src="${escapeHTML(row.image_url)}" alt="">`;
         return `
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8">
                 <rect x="3" y="3" width="18" height="18" rx="3"/>
@@ -1034,7 +1035,7 @@ async function initHomeMediaManager() {
             <div class="media-slot" data-position="${position}" draggable="true">
                 <span class="media-slot-index">${position}</span>
                 <div class="media-slot-thumb">${slotThumbHTML(row)}</div>
-                <button type="button" class="media-slot-label${anime ? ' has-anime' : ''}" data-action="edit">${label}</button>
+                <button type="button" class="media-slot-label${anime ? ' has-anime' : ''}" data-action="edit">${escapeHTML(label)}</button>
                 <span class="media-slot-drag" title="Arrastra para reordenar">
                     <i class='bx bx-dots-vertical-rounded'></i>
                 </span>
@@ -1052,7 +1053,7 @@ async function initHomeMediaManager() {
         const hasImage = !!row?.image_url;
         return `
             <div class="media-tile${hasImage ? ' has-image' : ''}" data-position="${position}" draggable="${hasImage}" data-action="edit">
-                ${hasImage ? `<img src="${row.image_url}" alt="">` : `
+                ${hasImage ? `<img src="${escapeHTML(row.image_url)}" alt="">` : `
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
@@ -1079,7 +1080,7 @@ async function initHomeMediaManager() {
         const { data, error } = await fetchGroupRows(group);
 
         if (error) {
-            group.slotsEl.innerHTML = `<p class="catalog-empty">Error: ${error.message}</p>`;
+            group.slotsEl.innerHTML = `<p class="catalog-empty">Error: ${escapeHTML(error.message)}</p>`;
             return;
         }
 

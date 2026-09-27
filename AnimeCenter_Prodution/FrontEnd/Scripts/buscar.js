@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient.js';
+import { escapeHTML } from './html.js';
 
 const params = new URLSearchParams(window.location.search);
 const query = params.get('q')?.trim() || '';
@@ -38,17 +39,9 @@ function saveRecentSearch(term) {
     }
 }
 
-// Escapa texto antes de meterlo en HTML. Las búsquedas recientes vienen
-// de la URL (?q=...), así que un link manipulado podía guardar HTML con
-// código en localStorage y ejecutarlo la siguiente vez que abrieras Buscar.
-function escapeHTML(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
+// Las búsquedas recientes vienen de la URL (?q=...): se escapan con
+// escapeHTML para que un link manipulado no pueda guardar HTML con código
+// en localStorage y ejecutarlo la siguiente vez que abrieras Buscar.
 
 function searchChipHTML(term) {
     return `<a href="/FrontEnd/Buscar.html?q=${encodeURIComponent(term)}" class="search-chip">${escapeHTML(term)}</a>`;

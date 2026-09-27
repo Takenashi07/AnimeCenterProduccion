@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient.js';
 import { requireAdultConfirmation, resolveAdultMediaUrl } from './adult-gate.js';
+import { escapeHTML } from './html.js';
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('slug');
@@ -86,7 +87,7 @@ function renderHeader(anime) {
     document.title = `Anime Center · ${anime.title}`;
 
     if (anime.cover_url) {
-        coverWrap.innerHTML = `<img src="${anime.cover_url}" alt="Portada de ${anime.title}" loading="lazy"
+        coverWrap.innerHTML = `<img src="${escapeHTML(anime.cover_url)}" alt="Portada de ${escapeHTML(anime.title)}" loading="lazy"
             onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'card-thumb card-thumb--empty'}));">`;
     } else {
         coverEmpty.hidden = false;
@@ -247,10 +248,10 @@ function episodeItemHTML(anime, episode, progress) {
         : '';
 
     return `
-        <a class="episode-item${isCurrent ? ' episode-item--current' : ''}" href="/FrontEnd/Capitulo.html?slug=${anime.slug}&ep=${episode.episode_number}">
+        <a class="episode-item${isCurrent ? ' episode-item--current' : ''}" href="/FrontEnd/Capitulo.html?slug=${encodeURIComponent(anime.slug)}&ep=${episode.episode_number}">
             <span class="episode-item-number">${episode.episode_number}</span>
             <span class="episode-item-body">
-                <span class="episode-item-title">${episode.title ? episode.title : `Capítulo ${episode.episode_number}`}</span>
+                <span class="episode-item-title">${episode.title ? escapeHTML(episode.title) : `Capítulo ${episode.episode_number}`}</span>
             </span>
             ${statusHTML}
             <svg class="episode-item-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
